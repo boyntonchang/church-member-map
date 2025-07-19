@@ -49,8 +49,8 @@ function App() {
   };
 
   // Generate SVG for Font Awesome church icon
-  const [width, height, , , svgPathData] = faChurch.icon;
-  const churchIconSvg = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg"><path d="${Array.isArray(svgPathData) ? svgPathData.join(' ') : svgPathData}" fill="currentColor"></path></svg>`;
+  const [churchWidth, churchHeight, , , churchSvgPathData] = faChurch.icon;
+  const churchIconSvg = `<svg viewBox="0 0 ${churchWidth} ${churchHeight}" xmlns="http://www.w3.org/2000/svg"><path d="${Array.isArray(churchSvgPathData) ? churchSvgPathData.join(' ') : churchSvgPathData}" fill="currentColor"></path></svg>`;
   const encodedChurchIconSvg = encodeURIComponent(churchIconSvg);
   const churchIconDataUrl = `data:image/svg+xml;charset=UTF-8,${encodedChurchIconSvg}`;
 

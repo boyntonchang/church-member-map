@@ -1,10 +1,10 @@
 {
   "churchInfo": {
-    "name": "Ondo Church",
+    "name": "Bethany Church",
     "address": "605 Pascack Rd, Township of Washington, NJ 07676",
     "coordinates": {
-      "lat": 40.983990,
-      "lng": -74.041600
+      "lat": 40.9925866629098,
+      "lng": -74.06081908529305
     }
   },
   "households": [
