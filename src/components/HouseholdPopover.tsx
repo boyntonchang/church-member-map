@@ -27,7 +27,7 @@ const HouseholdPopover: React.FC<Props> = ({ household, open, onClose }) => {
   if (!household) return null;
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} sx={{ '& .MuiDialog-paper': { overflow: 'hidden' } }}>
       <Card sx={{ minWidth: 640, maxWidth: 640, borderRadius: 0 }}>
         {household.familyPhotoUrl && (
           <CardMedia
