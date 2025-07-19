@@ -44,6 +44,9 @@ const HouseholdPopover: React.FC<Props> = ({ household, open, onClose }) => {
           <Typography variant="body2" color="text.secondary" fontStyle="italic">
             "{household.householdBio}"
           </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            Address: {household.address}
+          </Typography>
           <Divider sx={{ my: 2 }} />
           <Typography variant="h6" component="h3" sx={{ mb: 1, fontSize: '1.1rem' }}>
             Family Members
