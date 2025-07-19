@@ -1,9 +1,111 @@
-import { Box } from '@chakra-ui/react'
+import { useState, useEffect } from 'react';
+import { GoogleMap, useJsApiLoader, MarkerF } from '@react-google-maps/api';
+import { Box, Typography, Paper, CircularProgress } from '@mui/material';
+import type { Household, ChurchData } from './types'; // Import our types
+import HouseholdPopover from './components/HouseholdPopover';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faChurch } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faChurch);
+
+const mapOptions = {
+  disableDefaultUI: true,
+  zoomControl: true,
+  styles: [],
+};
 
 function App() {
+  const [churchData, setChurchData] = useState<ChurchData | null>(null);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+  const [selectedHousehold, setSelectedHousehold] = useState<Household | null>(null);
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  // Fetch data from the public JSON file
+  useEffect(() => {
+    fetch('/members-location.json')
+      .then((res) => res.json())
+      .then((data: ChurchData) => {
+        setChurchData(data);
+        setIsLoadingData(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch member data:", err);
+        setIsLoadingData(false);
+      });
+  }, []);
+
+  const { isLoaded: isMapLoaded, loadError: mapLoadError } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY!,
+  });
+
+  const handleMarkerClick = (household: Household) => {
+    setSelectedHousehold(household);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  // Generate SVG for Font Awesome church icon
+  const [width, height, , , svgPathData] = faChurch.icon;
+  const churchIconSvg = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg"><path d="${Array.isArray(svgPathData) ? svgPathData.join(' ') : svgPathData}" fill="currentColor"></path></svg>`;
+  const encodedChurchIconSvg = encodeURIComponent(churchIconSvg);
+  const churchIconDataUrl = `data:image/svg+xml;charset=UTF-8,${encodedChurchIconSvg}`;
+
+  if (isLoadingData || !isMapLoaded) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (mapLoadError || !churchData) {
+    return <Box p={5}><Typography>Error loading maps or member data.</Typography></Box>;
+  }
+
   return (
-    <Box>Hello World</Box>
-  )
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', padding: '1rem', paddingTop:'0',}}>
+      <Typography variant="h4" component="h1" align="center" sx={{ my: 2 }}>
+        Ondo Church Member Location
+      </Typography>
+      <Box sx={{ flexGrow: 1, position: 'relative', border: 'solid lightgray 0.2rem', borderRadius: '0.8rem', overflow: 'hidden', }}>
+        <GoogleMap
+          mapContainerStyle={{ width: '100%', height: '100%' }}
+          center={churchData.churchInfo.coordinates}
+          zoom={12}
+          options={mapOptions}
+        >
+          {churchData.households.map((household) => (
+            <MarkerF
+              key={household.householdId}
+              position={household.coordinates}
+              title={household.familyName}
+              onClick={() => handleMarkerClick(household)}
+            />
+          ))}
+           <MarkerF
+              position={churchData.churchInfo.coordinates}
+              title={churchData.churchInfo.name}
+              icon={{ url: churchIconDataUrl, scaledSize: new window.google.maps.Size(40, 40) }}
+            />
+        </GoogleMap>
+        
+        <Paper elevation={4} sx={{ position: 'absolute', top: 16, left: 16, p: 2, display: 'none' }}>
+          <Typography variant="h5">{churchData.churchInfo.name}</Typography>
+          <Typography variant="subtitle1">Member Location</Typography>
+        </Paper>
+      </Box>
+
+      <HouseholdPopover
+        household={selectedHousehold}
+        open={isModalOpen}
+        onClose={handleCloseModal}
+      />
+    </Box>
+  );
 }
 
-export default App
+export default App;
