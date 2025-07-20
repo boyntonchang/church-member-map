@@ -69,7 +69,7 @@ function App() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', padding: '1rem', paddingTop:'0',}}>
       <Typography variant="h4" component="h1" align="center" sx={{ my: 2 }}>
-        Ondo Church Member Location
+       Church Member Location
       </Typography>
       <Box sx={{ flexGrow: 1, position: 'relative', border: 'solid lightgray 0.2rem', borderRadius: '0.8rem', overflow: 'hidden', }}>
         <GoogleMap
