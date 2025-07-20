@@ -33,6 +33,16 @@ First Name
 Role in household (e.g., "Spouse," "Child").
 Household Bio/Greeting: A short, warm message from the family to the church community (e.g., "We've been members since 2018 and love being part of the choir!").
 Ministry Involvement: Tags or icons indicating which ministries the family or its members are involved in (e.g., "Youth Group," "Welcome Committee," "Music Ministry").
+
+4.3. Administrative Features
+Admin-Only Access: A designated administrator will have access to features for managing household data.
+Add New Household:
+An "Add New Family" button, visible only to the admin, will open a data entry form.
+The form will include fields for all household information: family name, bio, ministry involvement, address, and a family photo upload.
+It will allow for the dynamic addition of individual family members with their name and role.
+Geocoding: The system will automatically convert the entered address into map coordinates (latitude and longitude).
+Data Persistence: Upon submission, the new household's information will be saved to the application's data source, and the photo will be stored in the appropriate directory.
+
 5. User Flow
 A church member securely logs into the Church Connect web portal.
 The parish map loads, showing household markers across the area. They immediately see their own highlighted marker.
