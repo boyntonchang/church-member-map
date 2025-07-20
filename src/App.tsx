@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, MarkerF } from '@react-google-maps/api';
-import { Box, Typography, Paper, CircularProgress } from '@mui/material';
-import type { Household, ChurchData } from './types'; // Import our types
+import { Box, Typography, Paper, CircularProgress, Button } from '@mui/material';
+import type { Household, ChurchData, Coordinates } from './types';
 import HouseholdPopover from './components/HouseholdPopover';
+import AddFamilyModal from './components/AddFamilyModal';
+import LoginModal from './components/LoginModal';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faChurch } from '@fortawesome/free-solid-svg-icons';
+import MapView from './components/map-view';
 
 library.add(faChurch);
 
@@ -16,16 +19,20 @@ const mapOptions = {
 
 function App() {
   const [churchData, setChurchData] = useState<ChurchData | null>(null);
+  const [households, setHouseholds] = useState<Household[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [selectedHousehold, setSelectedHousehold] = useState<Household | null>(null);
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isHouseholdModalOpen, setIsHouseholdModalOpen] = useState(false);
+  const [isAddFamilyModalOpen, setIsAddFamilyModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
-  // Fetch data from the public JSON file
   useEffect(() => {
     fetch('/members-location.json')
       .then((res) => res.json())
       .then((data: ChurchData) => {
         setChurchData(data);
+        setHouseholds(data.households);
         setIsLoadingData(false);
       })
       .catch(err => {
@@ -37,15 +44,63 @@ function App() {
   const { isLoaded: isMapLoaded, loadError: mapLoadError } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY!,
+    libraries: ["places"],
   });
 
   const handleMarkerClick = (household: Household) => {
     setSelectedHousehold(household);
-    setModalOpen(true);
+    setIsHouseholdModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setModalOpen(false);
+  const handleCloseHouseholdModal = () => {
+    setIsHouseholdModalOpen(false);
+  };
+
+  const handleAddFamilyModalOpen = () => {
+    setIsAddFamilyModalOpen(true);
+  };
+
+  const handleAddFamilyModalClose = () => {
+    setIsAddFamilyModalOpen(false);
+  };
+
+  const handleSaveNewHousehold = (newHousehold: Omit<Household, 'householdId' | 'coordinates'>) => {
+    if (!isMapLoaded) {
+      console.error("Google Maps API not loaded.");
+      return;
+    }
+
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ address: newHousehold.address }, (results, status) => {
+      if (status === 'OK' && results && results[0]) {
+        const { lat, lng } = results[0].geometry.location;
+        const newHouseholdWithCoords: Household = {
+          ...newHousehold,
+          householdId: `hh_${Date.now()}`, // Simple unique ID
+          coordinates: { lat: lat(), lng: lng() },
+        };
+        setHouseholds(prevHouseholds => [...prevHouseholds, newHouseholdWithCoords]);
+        handleAddFamilyModalClose();
+      } else {
+        console.error('Geocode was not successful for the following reason:', status);
+        alert('Could not find coordinates for the address. Please try again.');
+      }
+    });
+  };
+
+  const handleLogin = (username: string) => {
+    // Simple admin check for now. In a real app, this would involve API calls.
+    if (username === 'admin') {
+      setIsAdminLoggedIn(true);
+      setIsLoginModalOpen(false);
+    } else {
+      alert('Invalid username or password.');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAdminLoggedIn(false);
+    setIsLoginModalOpen(true); // Show login modal on logout
   };
 
   // Generate SVG for Font Awesome church icon
@@ -78,7 +133,7 @@ function App() {
           zoom={12}
           options={mapOptions}
         >
-          {churchData.households.map((household) => (
+          {households.map((household) => (
             <MarkerF
               key={household.householdId}
               position={household.coordinates}
@@ -97,12 +152,43 @@ function App() {
           <Typography variant="h5">{churchData.churchInfo.name}</Typography>
           <Typography variant="subtitle1">Member Location</Typography>
         </Paper>
-      </Box>
+
+        </Box>
+
+      {isAdminLoggedIn && (
+        <Box sx={{ position: 'absolute', top: 16, right: 16, display: 'flex', gap: 1 }}>
+          <Button variant="contained" onClick={handleAddFamilyModalOpen}>
+            Add New Family
+          </Button>
+          <Button variant="outlined" onClick={handleLogout}>
+            Logout
+          </Button>
+        </Box>
+      )}
+      {!isAdminLoggedIn && (
+        <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
+          <Button variant="contained" onClick={() => setIsLoginModalOpen(true)}>
+            Login
+          </Button>
+        </Box>
+      )}
 
       <HouseholdPopover
         household={selectedHousehold}
-        open={isModalOpen}
-        onClose={handleCloseModal}
+        open={isHouseholdModalOpen}
+        onClose={handleCloseHouseholdModal}
+      />
+
+      <AddFamilyModal
+        open={isAddFamilyModalOpen}
+        onClose={handleAddFamilyModalClose}
+        onSave={handleSaveNewHousehold}
+      />
+
+      <LoginModal
+        open={isLoginModalOpen}
+        onLogin={handleLogin}
+        onClose={() => setIsLoginModalOpen(false)}
       />
     </Box>
   );
