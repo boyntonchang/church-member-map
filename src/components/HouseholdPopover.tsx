@@ -27,17 +27,18 @@ const HouseholdPopover: React.FC<Props> = ({ household, open, onClose }) => {
   if (!household) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} sx={{ '& .MuiDialog-paper': { overflow: 'hidden' } }}>
-      <Card sx={{ minWidth: 640, maxWidth: 640, borderRadius: 0 }}>
+    <Dialog open={open} onClose={onClose} sx={{ '& .MuiDialog-paper': { maxHeight: '90vh' },  }}>
+      <Card sx={{ display: 'flex', flexDirection: 'column', flex: '1 1 auto', width: '100%', minWidth: 600, maxWidth: 600, borderRadius: 0 }}>
         {household.familyPhotoUrl && (
           <CardMedia
             component="img"
-            height="180"
+            height="auto"
             image={household.familyPhotoUrl}
             alt={`${household.familyName} photo`}
+            sx={{ flexShrink: 0 }}
           />
         )}
-        <CardContent>
+        <CardContent sx={{ overflowY: 'auto', flex: '1 1 auto' }}>
           <Typography gutterBottom variant="h5" component="div">
             {household.familyName}
           </Typography>
