@@ -12,84 +12,544 @@
       "householdId": "hh_101",
       "familyName": "The Martinez Family",
       "address": "214 Washington Ave, Westwood, NJ 07675",
-      "coordinates": { "lat": 40.9888, "lng": -74.0309 },
+      "coordinates": {
+        "lat": 40.9888,
+        "lng": -74.0309
+      },
       "familyPhotoUrl": "family-photos/family-1.jpg",
       "householdBio": "We're the Martinez family! We've been members since 2018 and love being part of the community outreach programs.",
-      "ministryInvolvement": ["Community Outreach", "Youth Group"],
+      "ministryInvolvement": [
+        "Community Outreach",
+        "Youth Group"
+      ],
       "members": [
-        { "memberId": "mem_001", "firstName": "David", "role": "Head of Household" },
-        { "memberId": "mem_002", "firstName": "Laura", "role": "Spouse" },
-        { "memberId": "mem_003", "firstName": "Daniel", "role": "Son" }
+        {
+          "memberId": "mem_001",
+          "firstName": "David",
+          "role": "Head of Household"
+        },
+        {
+          "memberId": "mem_002",
+          "firstName": "Laura",
+          "role": "Spouse"
+        },
+        {
+          "memberId": "mem_003",
+          "firstName": "Daniel",
+          "role": "Son"
+        }
       ]
     },
     {
       "householdId": "hh_102",
       "familyName": "The Kim Family",
       "address": "33 Patterson St, Hillsdale, NJ 07642",
-      "coordinates": { "lat": 40.9996, "lng": -74.0435 },
+      "coordinates": {
+        "lat": 40.9996,
+        "lng": -74.0435
+      },
       "familyPhotoUrl": "family-photos/family-2.jpg",
       "householdBio": "Hello from the Kims! We are new to the area and so happy to have found such a welcoming church family.",
-      "ministryInvolvement": ["New Member Welcome"],
+      "ministryInvolvement": [
+        "New Member Welcome"
+      ],
       "members": [
-        { "memberId": "mem_004", "firstName": "Peter", "role": "Head of Household" },
-        { "memberId": "mem_005", "firstName": "Grace", "role": "Spouse" },
-        { "memberId": "mem_006", "firstName": "Hannah", "role": "Daughter" }
+        {
+          "memberId": "mem_004",
+          "firstName": "Peter",
+          "role": "Head of Household"
+        },
+        {
+          "memberId": "mem_005",
+          "firstName": "Grace",
+          "role": "Spouse"
+        },
+        {
+          "memberId": "mem_006",
+          "firstName": "Hannah",
+          "role": "Daughter"
+        }
       ]
     },
     {
       "householdId": "hh_103",
       "familyName": "The O'Connell Household",
       "address": "505 Kinderkamack Rd, River Edge, NJ 07661",
-      "coordinates": { "lat": 40.9419, "lng": -74.0368 },
+      "coordinates": {
+        "lat": 40.9419,
+        "lng": -74.0368
+      },
       "familyPhotoUrl": "family-photos/family-3.jpg",
       "householdBio": "Proud to be one of the founding families of the church. My door is always open for a cup of tea.",
-      "ministryInvolvement": ["Church Council", "Seniors Ministry"],
+      "ministryInvolvement": [
+        "Church Council",
+        "Seniors Ministry"
+      ],
       "members": [
-        { "memberId": "mem_007", "firstName": "Eleanor", "role": "Head of Household" }
+        {
+          "memberId": "mem_007",
+          "firstName": "Eleanor",
+          "role": "Head of Household"
+        }
       ]
     },
     {
       "householdId": "hh_104",
       "familyName": "The Singh Family",
       "address": "81 Paramus Rd, Paramus, NJ 07652",
-      "coordinates": { "lat": 40.9452, "lng": -74.0751 },
+      "coordinates": {
+        "lat": 40.9452,
+        "lng": -74.0751
+      },
       "familyPhotoUrl": "family-photos/family-4.jpg",
       "householdBio": "Our family is passionate about the music ministry!",
-      "ministryInvolvement": ["Music Ministry"],
+      "ministryInvolvement": [
+        "Music Ministry"
+      ],
       "members": [
-        { "memberId": "mem_008", "firstName": "Raj", "role": "Head of Household" },
-        { "memberId": "mem_009", "firstName": "Priya", "role": "Spouse" },
-        { "memberId": "mem_010", "firstName": "Anjali", "role": "Daughter" },
-        { "memberId": "mem_011", "firstName": "Rohan", "role": "Son" }
+        {
+          "memberId": "mem_008",
+          "firstName": "Raj",
+          "role": "Head of Household"
+        },
+        {
+          "memberId": "mem_009",
+          "firstName": "Priya",
+          "role": "Spouse"
+        },
+        {
+          "memberId": "mem_010",
+          "firstName": "Anjali",
+          "role": "Daughter"
+        },
+        {
+          "memberId": "mem_011",
+          "firstName": "Rohan",
+          "role": "Son"
+        }
       ]
     },
     {
       "householdId": "hh_105",
       "familyName": "The Williams Family",
       "address": "15 Maple Ave, Ridgewood, NJ 07450",
-      "coordinates": { "lat": 40.9806, "lng": -74.1130 },
+      "coordinates": {
+        "lat": 40.9806,
+        "lng": -74.113
+      },
       "familyPhotoUrl": "family-photos/family-5.jpg",
       "householdBio": "Go Knights! Our family loves serving in the youth ministry and at the summer VBS.",
-      "ministryInvolvement": ["Youth Group", "VBS"],
+      "ministryInvolvement": [
+        "Youth Group",
+        "VBS"
+      ],
       "members": [
-        { "memberId": "mem_012", "firstName": "Michael", "role": "Head of Household" },
-        { "memberId": "mem_013", "firstName": "Sarah", "role": "Spouse" }
+        {
+          "memberId": "mem_012",
+          "firstName": "Michael",
+          "role": "Head of Household"
+        },
+        {
+          "memberId": "mem_013",
+          "firstName": "Sarah",
+          "role": "Spouse"
+        }
       ]
     },
-    { "householdId": "hh_106", "familyName": "The Rodriguez Family", "address": "78 Broadway, Woodcliff Lake, NJ 07677", "coordinates": { "lat": 41.0064, "lng": -74.0621 }, "familyPhotoUrl": "family-photos/family-6.jpg", "householdBio": "We enjoy the fellowship and small group studies.", "ministryInvolvement": ["Small Groups"], "members": [ { "memberId": "mem_014", "firstName": "Javier", "role": "Head of Household" }, { "memberId": "mem_015", "firstName": "Isabella", "role": "Spouse" }, { "memberId": "mem_016", "firstName": "Mateo", "role": "Son" } ] },
-    
-    { "householdId": "hh_108", "familyName": "The Davis Family", "address": "45 W Ridgewood Ave, Ridgewood, NJ 07450", "coordinates": { "lat": 40.9831, "lng": -74.1200 }, "familyPhotoUrl": "family-photos/family-8.jpg", "householdBio": "We love the traditional service and choir.", "ministryInvolvement": ["Music Ministry"], "members": [ { "memberId": "mem_019", "firstName": "Charles", "role": "Head of Household" }, { "memberId": "mem_020", "firstName": "Brenda", "role": "Spouse" } ] },
-    { "householdId": "hh_109", "familyName": "The Miller Family", "address": "22 Forest Rd, Park Ridge, NJ 07656", "coordinates": { "lat": 41.0204, "lng": -74.0416 }, "familyPhotoUrl": "family-photos/family-9.jpg", "householdBio": "Our kids love the Sunday School program!", "ministryInvolvement": ["Sunday School"], "members": [ { "memberId": "mem_021", "firstName": "Chris", "role": "Head of Household" }, { "memberId": "mem_022", "firstName": "Jessica", "role": "Spouse" }, { "memberId": "mem_023", "firstName": "Olivia", "role": "Daughter" } ] },
-    { "householdId": "hh_110", "familyName": "The Jackson Family", "address": "300 Continental Ave, River Edge, NJ 07661", "coordinates": { "lat": 40.9329, "lng": -74.0401 }, "familyPhotoUrl": "family-photos/family-10.jpg", "householdBio": "Serving on the Welcome Committee has been a blessing.", "ministryInvolvement": ["Welcome Committee"], "members": [ { "memberId": "mem_024", "firstName": "Robert", "role": "Head of Household" }, { "memberId": "mem_025", "firstName": "Tina", "role": "Spouse" } ] },
-    { "householdId": "hh_111", "familyName": "The Thompson Household", "address": "55 Central Ave, Hillsdale, NJ 07642", "coordinates": { "lat": 40.9944, "lng": -74.0450 }, "familyPhotoUrl": "family-photos/family-11.jpg", "householdBio": "Recently joined.", "ministryInvolvement": [], "members": [ { "memberId": "mem_026", "firstName": "George", "role": "Head of Household" } ] },
-    { "householdId": "hh_112", "familyName": "The Lee Family", "address": "12 Piermont Rd, Closter, NJ 07624", "coordinates": { "lat": 40.9765, "lng": -73.9610 }, "familyPhotoUrl": "family-photos/family-12.jpg", "householdBio": "We are grateful for the diverse community here.", "ministryInvolvement": ["Small Groups"], "members": [ { "memberId": "mem_027", "firstName": "John", "role": "Head of Household" }, { "memberId": "mem_028", "firstName": "Susan", "role": "Spouse" }, { "memberId": "mem_029", "firstName": "Emily", "role": "Daughter" } ] },
-    { "householdId": "hh_113", "familyName": "The Brown Family", "address": "89 Pascack Rd, Township of Washington, NJ 07676", "coordinates": { "lat": 40.9712, "lng": -74.0416 }, "familyPhotoUrl": "family-photos/family-13.jpg", "householdBio": "We live just down the street from the church!", "ministryInvolvement": ["Food Pantry"], "members": [ { "memberId": "mem_030", "firstName": "James", "role": "Head of Household" }, { "memberId": "mem_031", "firstName": "Patricia", "role": "Spouse" } ] },
-    { "householdId": "hh_114", "familyName": "The Garcia Family", "address": "404 Saddle River Rd, Saddle Brook, NJ 07663", "coordinates": { "lat": 40.9109, "lng": -74.0881 }, "familyPhotoUrl": "family-photos/family-14.jpg", "householdBio": "Not to be confused with the other Garcia family! We handle the audio/visual for the services.", "ministryInvolvement": ["AV Team"], "members": [ { "memberId": "mem_032", "firstName": "Jose", "role": "Head of Household" }, { "memberId": "mem_033", "firstName": "Maria", "role": "Spouse" } ] },
-    { "householdId": "hh_115", "familyName": "The Clark Family", "address": "120 E Main St, Ramsey, NJ 07446", "coordinates": { "lat": 41.0573, "lng": -74.1396 }, "familyPhotoUrl": "family-photos/family-15.jpg", "householdBio": "It's a bit of a drive, but worth it for the fellowship.", "ministryInvolvement": [], "members": [ { "memberId": "mem_034", "firstName": "Brian", "role": "Head of Household" }, { "memberId": "mem_035", "firstName": "Karen", "role": "Spouse" }, { "memberId": "mem_036", "firstName": "Kevin", "role": "Son" } ] },
-    { "householdId": "hh_116", "familyName": "The Lewis Household", "address": "250 Wearimus Rd, Ho-Ho-Kus, NJ 07423", "coordinates": { "lat": 40.9915, "lng": -74.0880 }, "familyPhotoUrl": "family-photos/family-16.jpg", "householdBio": "Looking forward to getting more involved.", "ministryInvolvement": [], "members": [ { "memberId": "mem_037", "firstName": "Dorothy", "role": "Head of Household" } ] },
-    { "householdId": "hh_117", "familyName": "The Walker Family", "address": "680 From Rd, Paramus, NJ 07652", "coordinates": { "lat": 40.9570, "lng": -74.0610 }, "familyPhotoUrl": "family-photos/family-17.jpg", "householdBio": "Our family helps organize the annual church picnic.", "ministryInvolvement": ["Events Committee"], "members": [ { "memberId": "mem_038", "firstName": "Scott", "role": "Head of Household" }, { "memberId": "mem_039", "firstName": "Nancy", "role": "Spouse" } ] },
-    { "householdId": "hh_118", "familyName": "The Hall Family", "address": "15 W Grand Ave, Montvale, NJ 07645", "coordinates": { "lat": 41.0425, "lng": -74.0326 }, "familyPhotoUrl": "family-photos/family-18.jpg", "householdBio": "Three generations of our family attend here!", "ministryInvolvement": [], "members": [ { "memberId": "mem_040", "firstName": "Edward", "role": "Head of Household" }, { "memberId": "mem_041", "firstName": "Donna", "role": "Spouse" }, { "memberId": "mem_042", "firstName": "Steven", "role": "Son" }, { "memberId": "mem_043", "firstName": "Chloe", "role": "Daughter" } ] },
-    { "householdId": "hh_119", "familyName": "The Allen Family", "address": "333 Mill Rd, Woodcliff Lake, NJ 07677", "coordinates": { "lat": 41.0152, "lng": -74.0598 }, "familyPhotoUrl": "family-photos/family-19.jpg", "householdBio": "Blessed to be a part of this church.", "ministryInvolvement": ["Food Pantry"], "members": [ { "memberId": "mem_044", "firstName": "Paul", "role": "Head of Household" }, { "memberId": "mem_045", "firstName": "Cynthia", "role": "Spouse" } ] },
-    { "householdId": "hh_120", "familyName": "The Wright Household", "address": "40 S Van Brunt St, Englewood, NJ 07631", "coordinates": { "lat": 40.8887, "lng": -73.9744 }, "familyPhotoUrl": "family-photos/family-20.jpg", "householdBio": "Happy to be here!", "ministryInvolvement": [], "members": [ { "memberId": "mem_046", "firstName": "Jason", "role": "Head of Household" } ] }
+    {
+      "householdId": "hh_106",
+      "familyName": "The Rodriguez Family",
+      "address": "78 Broadway, Woodcliff Lake, NJ 07677",
+      "coordinates": {
+        "lat": 41.0064,
+        "lng": -74.0621
+      },
+      "familyPhotoUrl": "family-photos/family-6.jpg",
+      "householdBio": "We enjoy the fellowship and small group studies.",
+      "ministryInvolvement": [
+        "Small Groups"
+      ],
+      "members": [
+        {
+          "memberId": "mem_014",
+          "firstName": "Javier",
+          "role": "Head of Household"
+        },
+        {
+          "memberId": "mem_015",
+          "firstName": "Isabella",
+          "role": "Spouse"
+        },
+        {
+          "memberId": "mem_016",
+          "firstName": "Mateo",
+          "role": "Son"
+        }
+      ]
+    },
+    {
+      "householdId": "hh_108",
+      "familyName": "The Davis Family",
+      "address": "45 W Ridgewood Ave, Ridgewood, NJ 07450",
+      "coordinates": {
+        "lat": 40.9831,
+        "lng": -74.12
+      },
+      "familyPhotoUrl": "family-photos/family-8.jpg",
+      "householdBio": "We love the traditional service and choir.",
+      "ministryInvolvement": [
+        "Music Ministry"
+      ],
+      "members": [
+        {
+          "memberId": "mem_019",
+          "firstName": "Charles",
+          "role": "Head of Household"
+        },
+        {
+          "memberId": "mem_020",
+          "firstName": "Brenda",
+          "role": "Spouse"
+        }
+      ]
+    },
+    {
+      "householdId": "hh_109",
+      "familyName": "The Miller Family",
+      "address": "22 Forest Rd, Park Ridge, NJ 07656",
+      "coordinates": {
+        "lat": 41.0204,
+        "lng": -74.0416
+      },
+      "familyPhotoUrl": "family-photos/family-9.jpg",
+      "householdBio": "Our kids love the Sunday School program!",
+      "ministryInvolvement": [
+        "Sunday School"
+      ],
+      "members": [
+        {
+          "memberId": "mem_021",
+          "firstName": "Chris",
+          "role": "Head of Household"
+        },
+        {
+          "memberId": "mem_022",
+          "firstName": "Jessica",
+          "role": "Spouse"
+        },
+        {
+          "memberId": "mem_023",
+          "firstName": "Olivia",
+          "role": "Daughter"
+        }
+      ]
+    },
+    {
+      "householdId": "hh_110",
+      "familyName": "The Jackson Family",
+      "address": "300 Continental Ave, River Edge, NJ 07661",
+      "coordinates": {
+        "lat": 40.9329,
+        "lng": -74.0401
+      },
+      "familyPhotoUrl": "family-photos/family-10.jpg",
+      "householdBio": "Serving on the Welcome Committee has been a blessing.",
+      "ministryInvolvement": [
+        "Welcome Committee"
+      ],
+      "members": [
+        {
+          "memberId": "mem_024",
+          "firstName": "Robert",
+          "role": "Head of Household"
+        },
+        {
+          "memberId": "mem_025",
+          "firstName": "Tina",
+          "role": "Spouse"
+        }
+      ]
+    },
+    {
+      "householdId": "hh_111",
+      "familyName": "The Thompson Household",
+      "address": "55 Central Ave, Hillsdale, NJ 07642",
+      "coordinates": {
+        "lat": 40.9944,
+        "lng": -74.045
+      },
+      "familyPhotoUrl": "family-photos/family-11.jpg",
+      "householdBio": "Recently joined.",
+      "ministryInvolvement": [],
+      "members": [
+        {
+          "memberId": "mem_026",
+          "firstName": "George",
+          "role": "Head of Household"
+        }
+      ]
+    },
+    {
+      "householdId": "hh_112",
+      "familyName": "The Lee Family",
+      "address": "12 Piermont Rd, Closter, NJ 07624",
+      "coordinates": {
+        "lat": 40.9765,
+        "lng": -73.961
+      },
+      "familyPhotoUrl": "family-photos/family-12.jpg",
+      "householdBio": "We are grateful for the diverse community here.",
+      "ministryInvolvement": [
+        "Small Groups"
+      ],
+      "members": [
+        {
+          "memberId": "mem_027",
+          "firstName": "John",
+          "role": "Head of Household"
+        },
+        {
+          "memberId": "mem_028",
+          "firstName": "Susan",
+          "role": "Spouse"
+        },
+        {
+          "memberId": "mem_029",
+          "firstName": "Emily",
+          "role": "Daughter"
+        }
+      ]
+    },
+    {
+      "householdId": "hh_113",
+      "familyName": "The Brown Family",
+      "address": "89 Pascack Rd, Township of Washington, NJ 07676",
+      "coordinates": {
+        "lat": 40.9712,
+        "lng": -74.0416
+      },
+      "familyPhotoUrl": "family-photos/family-13.jpg",
+      "householdBio": "We live just down the street from the church!",
+      "ministryInvolvement": [
+        "Food Pantry"
+      ],
+      "members": [
+        {
+          "memberId": "mem_030",
+          "firstName": "James",
+          "role": "Head of Household"
+        },
+        {
+          "memberId": "mem_031",
+          "firstName": "Patricia",
+          "role": "Spouse"
+        }
+      ]
+    },
+    {
+      "householdId": "hh_114",
+      "familyName": "The Garcia Family",
+      "address": "404 Saddle River Rd, Saddle Brook, NJ 07663",
+      "coordinates": {
+        "lat": 40.9109,
+        "lng": -74.0881
+      },
+      "familyPhotoUrl": "family-photos/family-14.jpg",
+      "householdBio": "Not to be confused with the other Garcia family! We handle the audio/visual for the services.",
+      "ministryInvolvement": [
+        "AV Team"
+      ],
+      "members": [
+        {
+          "memberId": "mem_032",
+          "firstName": "Jose",
+          "role": "Head of Household"
+        },
+        {
+          "memberId": "mem_033",
+          "firstName": "Maria",
+          "role": "Spouse"
+        }
+      ]
+    },
+    {
+      "householdId": "hh_115",
+      "familyName": "The Clark Family",
+      "address": "120 E Main St, Ramsey, NJ 07446",
+      "coordinates": {
+        "lat": 41.0573,
+        "lng": -74.1396
+      },
+      "familyPhotoUrl": "family-photos/family-15.jpg",
+      "householdBio": "It's a bit of a drive, but worth it for the fellowship.",
+      "ministryInvolvement": [],
+      "members": [
+        {
+          "memberId": "mem_034",
+          "firstName": "Brian",
+          "role": "Head of Household"
+        },
+        {
+          "memberId": "mem_035",
+          "firstName": "Karen",
+          "role": "Spouse"
+        },
+        {
+          "memberId": "mem_036",
+          "firstName": "Kevin",
+          "role": "Son"
+        }
+      ]
+    },
+    {
+      "householdId": "hh_116",
+      "familyName": "The Lewis Household",
+      "address": "250 Wearimus Rd, Ho-Ho-Kus, NJ 07423",
+      "coordinates": {
+        "lat": 40.9915,
+        "lng": -74.088
+      },
+      "familyPhotoUrl": "family-photos/family-16.jpg",
+      "householdBio": "Looking forward to getting more involved.",
+      "ministryInvolvement": [],
+      "members": [
+        {
+          "memberId": "mem_037",
+          "firstName": "Dorothy",
+          "role": "Head of Household"
+        }
+      ]
+    },
+    {
+      "householdId": "hh_117",
+      "familyName": "The Walker Family",
+      "address": "680 From Rd, Paramus, NJ 07652",
+      "coordinates": {
+        "lat": 40.957,
+        "lng": -74.061
+      },
+      "familyPhotoUrl": "family-photos/family-17.jpg",
+      "householdBio": "Our family helps organize the annual church picnic.",
+      "ministryInvolvement": [
+        "Events Committee"
+      ],
+      "members": [
+        {
+          "memberId": "mem_038",
+          "firstName": "Scott",
+          "role": "Head of Household"
+        },
+        {
+          "memberId": "mem_039",
+          "firstName": "Nancy",
+          "role": "Spouse"
+        }
+      ]
+    },
+    {
+      "householdId": "hh_118",
+      "familyName": "The Hall Family",
+      "address": "15 W Grand Ave, Montvale, NJ 07645",
+      "coordinates": {
+        "lat": 41.0425,
+        "lng": -74.0326
+      },
+      "familyPhotoUrl": "family-photos/family-18.jpg",
+      "householdBio": "Three generations of our family attend here!",
+      "ministryInvolvement": [],
+      "members": [
+        {
+          "memberId": "mem_040",
+          "firstName": "Edward",
+          "role": "Head of Household"
+        },
+        {
+          "memberId": "mem_041",
+          "firstName": "Donna",
+          "role": "Spouse"
+        },
+        {
+          "memberId": "mem_042",
+          "firstName": "Steven",
+          "role": "Son"
+        },
+        {
+          "memberId": "mem_043",
+          "firstName": "Chloe",
+          "role": "Daughter"
+        }
+      ]
+    },
+    {
+      "householdId": "hh_119",
+      "familyName": "The Allen Family",
+      "address": "333 Mill Rd, Woodcliff Lake, NJ 07677",
+      "coordinates": {
+        "lat": 41.0152,
+        "lng": -74.0598
+      },
+      "familyPhotoUrl": "family-photos/family-19.jpg",
+      "householdBio": "Blessed to be a part of this church.",
+      "ministryInvolvement": [
+        "Food Pantry"
+      ],
+      "members": [
+        {
+          "memberId": "mem_044",
+          "firstName": "Paul",
+          "role": "Head of Household"
+        },
+        {
+          "memberId": "mem_045",
+          "firstName": "Cynthia",
+          "role": "Spouse"
+        }
+      ]
+    },
+    {
+      "householdId": "hh_120",
+      "familyName": "The Wright Household",
+      "address": "40 S Van Brunt St, Englewood, NJ 07631",
+      "coordinates": {
+        "lat": 40.8887,
+        "lng": -73.9744
+      },
+      "familyPhotoUrl": "family-photos/family-20.jpg",
+      "householdBio": "Happy to be here!",
+      "ministryInvolvement": [],
+      "members": [
+        {
+          "memberId": "mem_046",
+          "firstName": "Jason",
+          "role": "Head of Household"
+        }
+      ]
+    },
+    {
+      "familyName": "chino",
+      "householdBio": "Cat loving family",
+      "address": "125 w prospect st., Waldwick, NJ",
+      "members": [
+        {
+          "firstName": "chino",
+          "role": "Head of Household",
+          "memberId": "mem_1753025041218_sdh8eln69"
+        },
+        {
+          "firstName": "groomie",
+          "role": "cat",
+          "memberId": "mem_1753025041218_ngrcuzn9x"
+        }
+      ],
+      "ministryInvolvement": [
+        "parking"
+      ],
+      "familyPhotoUrl": "",
+      "householdId": "hh_1753025041514",
+      "coordinates": {
+        "lat": 41.0135136,
+        "lng": -74.1311819
+      }
+    }
   ]
 }

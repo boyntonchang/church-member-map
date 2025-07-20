@@ -28,17 +28,34 @@ function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
   useEffect(() => {
+    const fetchHouseholds = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/households');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        // Assuming churchInfo is still loaded from local JSON for now, or will be provided by backend later
+        // For now, we'll just set households from the backend response
+        setHouseholds(data);
+        setIsLoadingData(false);
+      } catch (err) {
+        console.error("Failed to fetch household data from backend:", err);
+        setIsLoadingData(false);
+      }
+    };
+
+    // Also fetch churchInfo from local JSON for now
     fetch('/members-location.json')
       .then((res) => res.json())
       .then((data: ChurchData) => {
         setChurchData(data);
-        setHouseholds(data.households);
-        setIsLoadingData(false);
       })
       .catch(err => {
-        console.error("Failed to fetch member data:", err);
-        setIsLoadingData(false);
+        console.error("Failed to fetch church info from local JSON:", err);
       });
+
+    fetchHouseholds();
   }, []);
 
   const { isLoaded: isMapLoaded, loadError: mapLoadError } = useJsApiLoader({
@@ -71,7 +88,7 @@ function App() {
     }
 
     const geocoder = new window.google.maps.Geocoder();
-    geocoder.geocode({ address: newHousehold.address }, (results, status) => {
+    geocoder.geocode({ address: newHousehold.address }, async (results, status) => {
       if (status === 'OK' && results && results[0]) {
         const { lat, lng } = results[0].geometry.location;
         const newHouseholdWithCoords: Household = {
@@ -79,8 +96,27 @@ function App() {
           householdId: `hh_${Date.now()}`, // Simple unique ID
           coordinates: { lat: lat(), lng: lng() },
         };
-        setHouseholds(prevHouseholds => [...prevHouseholds, newHouseholdWithCoords]);
-        handleAddFamilyModalClose();
+
+        try {
+          const response = await fetch('http://localhost:3001/api/households', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newHouseholdWithCoords),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const addedHousehold = await response.json();
+          setHouseholds(prevHouseholds => [...prevHouseholds, addedHousehold]);
+          handleAddFamilyModalClose();
+        } catch (error) {
+          console.error("Error adding new household:", error);
+          alert('Failed to add new household. Please try again.');
+        }
       } else {
         console.error('Geocode was not successful for the following reason:', status);
         alert('Could not find coordinates for the address. Please try again.');
