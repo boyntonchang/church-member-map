@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -17,9 +17,10 @@ interface Props {
   open: boolean;
   onClose: () => void;
   onSave: (newHousehold: Omit<Household, 'householdId' | 'coordinates'>) => void;
+  initialData?: Household | null;
 }
 
-const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave }) => {
+const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData }) => {
   const [familyName, setFamilyName] = useState('');
   const [householdBio, setHouseholdBio] = useState('');
   const [address, setAddress] = useState('');
@@ -28,6 +29,29 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave }) => {
   ]);
   const [ministries, setMinistries] = useState('');
   const [familyPhoto, setFamilyPhoto] = useState<File | null>(null);
+
+  useEffect(() => {
+    if (open) {
+      if (initialData) {
+        setFamilyName(initialData.familyName);
+        setHouseholdBio(initialData.householdBio);
+        setAddress(initialData.address);
+        setMembers(initialData.members.map(member => ({ firstName: member.firstName, role: member.role })));
+        setMinistries(initialData.ministryInvolvement.join(', '));
+        // For familyPhoto, you might want to handle displaying the existing image or a placeholder
+        // For now, we'll just clear it or leave it as is.
+        setFamilyPhoto(null);
+      } else {
+        // Reset form for new entry
+        setFamilyName('');
+        setHouseholdBio('');
+        setAddress('');
+        setMembers([{ firstName: '', role: 'Head of Household' }]);
+        setMinistries('');
+        setFamilyPhoto(null);
+      }
+    }
+  }, [open, initialData]);
 
   const handleAddMember = () => {
     setMembers([...members, { firstName: '', role: '' }]);
@@ -53,26 +77,24 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave }) => {
   const handleSubmit = () => {
     const membersWithIds = members.map(member => ({
       ...member,
-      memberId: `mem_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, // Simple unique ID generation
+      memberId: member.memberId || `mem_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, // Use existing ID or generate new
     }));
 
-    const newHouseholdData = {
+    const householdToSave = {
       familyName,
       householdBio,
       address,
       members: membersWithIds,
       ministryInvolvement: ministries.split(',').map(m => m.trim()).filter(m => m),
-      // In a real app, the photo would be uploaded and the URL would be set here.
-      // For now, we'll use a placeholder or the local file path for demonstration.
-      familyPhotoUrl: familyPhoto ? URL.createObjectURL(familyPhoto) : '',
+      familyPhotoUrl: familyPhoto ? URL.createObjectURL(familyPhoto) : (initialData?.familyPhotoUrl || ''),
     };
-    onSave(newHouseholdData);
+    onSave(householdToSave);
     onClose(); // Close modal after save
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Add New Family</DialogTitle>
+      <DialogTitle>{initialData ? 'Edit Family' : 'Add New Family'}</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 2 }}>
           <TextField

@@ -24,6 +24,7 @@ function App() {
   const [selectedHousehold, setSelectedHousehold] = useState<Household | null>(null);
   const [isHouseholdModalOpen, setIsHouseholdModalOpen] = useState(false);
   const [isAddFamilyModalOpen, setIsAddFamilyModalOpen] = useState(false);
+  const [householdToEdit, setHouseholdToEdit] = useState<Household | null>(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(localStorage.getItem('isAdminLoggedIn') === 'true');
 
@@ -74,48 +75,77 @@ function App() {
   };
 
   const handleAddFamilyModalOpen = () => {
+    setHouseholdToEdit(null); // Clear any previous edit data
     setIsAddFamilyModalOpen(true);
   };
 
   const handleAddFamilyModalClose = () => {
     setIsAddFamilyModalOpen(false);
+    setHouseholdToEdit(null); // Clear edit data on close
   };
 
-  const handleSaveNewHousehold = (newHousehold: Omit<Household, 'householdId' | 'coordinates'>) => {
+  const handleEditHousehold = (household: Household) => {
+    setSelectedHousehold(null); // Close popover
+    setIsHouseholdModalOpen(false);
+    setHouseholdToEdit(household);
+    setIsAddFamilyModalOpen(true);
+  };
+
+  const handleSaveHousehold = async (householdData: Omit<Household, 'householdId' | 'coordinates'>) => {
     if (!isMapLoaded) {
       console.error("Google Maps API not loaded.");
       return;
     }
 
     const geocoder = new window.google.maps.Geocoder();
-    geocoder.geocode({ address: newHousehold.address }, async (results, status) => {
+    geocoder.geocode({ address: householdData.address }, async (results, status) => {
       if (status === 'OK' && results && results[0]) {
         const { lat, lng } = results[0].geometry.location;
-        const newHouseholdWithCoords: Household = {
-          ...newHousehold,
-          householdId: `hh_${Date.now()}`, // Simple unique ID
+        const householdWithCoords: Household = {
+          ...householdData,
+          householdId: householdToEdit ? householdToEdit.householdId : `hh_${Date.now()}`, // Use existing ID if editing
           coordinates: { lat: lat(), lng: lng() },
         };
 
         try {
-          const response = await fetch('http://localhost:3001/api/households', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newHouseholdWithCoords),
-          });
+          let response;
+          if (householdToEdit) {
+            // Update existing household
+            response = await fetch(`http://localhost:3001/api/households/${householdToEdit.householdId}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(householdWithCoords),
+            });
+          } else {
+            // Add new household
+            response = await fetch('http://localhost:3001/api/households', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(householdWithCoords),
+            });
+          }
 
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
 
-          const addedHousehold = await response.json();
-          setHouseholds(prevHouseholds => [...prevHouseholds, addedHousehold]);
+          const savedHousehold = await response.json();
+
+          if (householdToEdit) {
+            setHouseholds(prevHouseholds =>
+              prevHouseholds.map(hh => (hh.householdId === savedHousehold.householdId ? savedHousehold : hh))
+            );
+          } else {
+            setHouseholds(prevHouseholds => [...prevHouseholds, savedHousehold]);
+          }
           handleAddFamilyModalClose();
         } catch (error) {
-          console.error("Error adding new household:", error);
-          alert('Failed to add new household. Please try again.');
+          console.error("Error saving household:", error);
+          alert('Failed to save household. Please try again.');
         }
       } else {
         console.error('Geocode was not successful for the following reason:', status);
@@ -217,12 +247,15 @@ function App() {
         household={selectedHousehold}
         open={isHouseholdModalOpen}
         onClose={handleCloseHouseholdModal}
+        isAdminLoggedIn={isAdminLoggedIn}
+        onEditHousehold={handleEditHousehold}
       />
 
       <AddFamilyModal
         open={isAddFamilyModalOpen}
         onClose={handleAddFamilyModalClose}
-        onSave={handleSaveNewHousehold}
+        onSave={handleSaveHousehold}
+        initialData={householdToEdit}
       />
 
       <LoginModal

@@ -451,32 +451,32 @@
       "familyName": "The Hall Family",
       "address": "15 W Grand Ave, Montvale, NJ 07645",
       "coordinates": {
-        "lat": 41.0425,
-        "lng": -74.0326
+        "lat": 41.0406093,
+        "lng": -74.0310658
       },
       "familyPhotoUrl": "family-photos/family-18.jpg",
-      "householdBio": "Three generations of our family attend here!",
+      "householdBio": "Three generations of our family attend here! ",
       "ministryInvolvement": [],
       "members": [
         {
-          "memberId": "mem_040",
           "firstName": "Edward",
-          "role": "Head of Household"
+          "role": "Head of Household",
+          "memberId": "mem_1753071099989_xdn55aru5"
         },
         {
-          "memberId": "mem_041",
           "firstName": "Donna",
-          "role": "Spouse"
+          "role": "Spouse",
+          "memberId": "mem_1753071099989_psht8t9ht"
         },
         {
-          "memberId": "mem_042",
           "firstName": "Steven",
-          "role": "Son"
+          "role": "Son",
+          "memberId": "mem_1753071099989_aylkey6j5"
         },
         {
-          "memberId": "mem_043",
           "firstName": "Chloe",
-          "role": "Daughter"
+          "role": "Daughter",
+          "memberId": "mem_1753071099989_wico5r99m"
         }
       ]
     },

@@ -12,18 +12,22 @@ import {
   Avatar,
   Divider,
   Stack,
-  Chip
+  Chip,
+  Box,
+  Button
 } from '@mui/material';
-import type { Household } from '../types'; // Import our custom type
- // Import our custom type
+import EditIcon from '@mui/icons-material/Edit';
+import type { Household } from '../types';
 
 interface Props {
   household: Household | null;
   open: boolean;
   onClose: () => void;
+  isAdminLoggedIn: boolean;
+  onEditHousehold: (household: Household) => void;
 }
 
-const HouseholdPopover: React.FC<Props> = ({ household, open, onClose }) => {
+const HouseholdPopover: React.FC<Props> = ({ household, open, onClose, isAdminLoggedIn, onEditHousehold }) => {
   if (!household) return null;
 
   return (
@@ -39,9 +43,21 @@ const HouseholdPopover: React.FC<Props> = ({ household, open, onClose }) => {
           />
         )}
         <CardContent sx={{ overflowY: 'auto', flex: '1 1 auto' }}>
-          <Typography gutterBottom variant="h5" component="div">
-            {household.familyName}
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+            <Typography gutterBottom variant="h5" component="div" sx={{ mb: 0 }}>
+              {household.familyName}
+            </Typography>
+            {isAdminLoggedIn && (
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<EditIcon />}
+                onClick={() => onEditHousehold(household)}
+              >
+                Edit
+              </Button>
+            )}
+          </Box>
           <Typography variant="body2" color="text.secondary" fontStyle="italic">
             "{household.householdBio}"
           </Typography>

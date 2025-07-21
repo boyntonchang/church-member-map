@@ -48,6 +48,36 @@ app.post('/api/households', (req, res) => {
   });
 });
 
+// API to update an existing household
+app.put('/api/households/:id', (req, res) => {
+  fs.readFile(dataFilePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error("Error reading data file:", err);
+      return res.status(500).json({ message: 'Error reading data' });
+    }
+    let churchData = JSON.parse(data);
+    const householdIdToUpdate = req.params.id;
+    const updatedHouseholdData = req.body;
+
+    const householdIndex = churchData.households.findIndex(hh => hh.householdId === householdIdToUpdate);
+
+    if (householdIndex === -1) {
+      return res.status(404).json({ message: 'Household not found' });
+    }
+
+    // Update the household, preserving its original ID and coordinates if not provided in update
+    churchData.households[householdIndex] = { ...churchData.households[householdIndex], ...updatedHouseholdData };
+
+    fs.writeFile(dataFilePath, JSON.stringify(churchData, null, 2), 'utf8', (err) => {
+      if (err) {
+        console.error("Error writing data file:", err);
+        return res.status(500).json({ message: 'Error writing data' });
+      }
+      res.json(churchData.households[householdIndex]); // Send back the updated household
+    });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
