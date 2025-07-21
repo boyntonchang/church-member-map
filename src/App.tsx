@@ -25,7 +25,7 @@ function App() {
   const [isHouseholdModalOpen, setIsHouseholdModalOpen] = useState(false);
   const [isAddFamilyModalOpen, setIsAddFamilyModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(localStorage.getItem('isAdminLoggedIn') === 'true');
 
   useEffect(() => {
     const fetchHouseholds = async () => {
@@ -125,10 +125,10 @@ function App() {
   };
 
   const handleLogin = (username: string) => {
-    // Simple admin check for now. In a real app, this would involve API calls.
     if (username === 'admin') {
       setIsAdminLoggedIn(true);
       setIsLoginModalOpen(false);
+      localStorage.setItem('isAdminLoggedIn', 'true');
     } else {
       alert('Invalid username or password.');
     }
@@ -137,6 +137,7 @@ function App() {
   const handleLogout = () => {
     setIsAdminLoggedIn(false);
     setIsLoginModalOpen(true); // Show login modal on logout
+    localStorage.removeItem('isAdminLoggedIn');
   };
 
   // Generate SVG for Font Awesome church icon
