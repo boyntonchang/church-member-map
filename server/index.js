@@ -20,7 +20,7 @@ app.get('/api/households', (req, res) => {
       return res.status(500).json({ message: 'Error reading data' });
     }
     const churchData = JSON.parse(data);
-    res.json(churchData.households);
+    res.json(churchData.households.slice(0, 10));
   });
 });
 
