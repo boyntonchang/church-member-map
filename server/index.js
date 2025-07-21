@@ -1,81 +1,61 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
-const fs = require('fs');
+const { createClient } = require('@supabase/supabase-js');
+require('dotenv').config({ path: '../.env' });
 
 const app = express();
 const PORT = 3001;
+
+// Supabase Configuration
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-const dataFilePath = path.join(__dirname, '..', 'public', 'members-location.json');
-
 // API to get all households
-app.get('/api/households', (req, res) => {
-  fs.readFile(dataFilePath, 'utf8', (err, data) => {
-    if (err) {
-      console.error("Error reading data file:", err);
-      return res.status(500).json({ message: 'Error reading data' });
-    }
-    const churchData = JSON.parse(data);
-    res.json(churchData.households.slice(0, 10));
-  });
+app.get('/api/households', async (req, res) => {
+  try {
+    const { data, error } = await supabase.from('households').select('*');
+    if (error) throw error;
+    res.json(data);
+  } catch (error) {
+    console.error("Error fetching households from Supabase:", error.message);
+    res.status(500).json({ message: 'Error fetching data' });
+  }
 });
 
 // API to add a new household
-app.post('/api/households', (req, res) => {
-  fs.readFile(dataFilePath, 'utf8', (err, data) => {
-    if (err) {
-      console.error("Error reading data file:", err);
-      return res.status(500).json({ message: 'Error reading data' });
-    }
-    const churchData = JSON.parse(data);
+app.post('/api/households', async (req, res) => {
+  try {
     const newHousehold = req.body;
-
-    // Assign a unique ID and add to households array
-    newHousehold.householdId = `hh_${Date.now()}`;
-    churchData.households.push(newHousehold);
-
-    fs.writeFile(dataFilePath, JSON.stringify(churchData, null, 2), 'utf8', (err) => {
-      if (err) {
-        console.error("Error writing data file:", err);
-        return res.status(500).json({ message: 'Error writing data' });
-      }
-      res.status(201).json(newHousehold);
-    });
-  });
+    // Supabase will automatically assign an ID if your table is configured with a primary key
+    const { data, error } = await supabase.from('households').insert([newHousehold]).select();
+    if (error) throw error;
+    res.status(201).json(data[0]);
+  } catch (error) {
+    console.error("Error adding household to Supabase:", error.message);
+    res.status(500).json({ message: 'Error adding data' });
+  }
 });
 
 // API to update an existing household
-app.put('/api/households/:id', (req, res) => {
-  fs.readFile(dataFilePath, 'utf8', (err, data) => {
-    if (err) {
-      console.error("Error reading data file:", err);
-      return res.status(500).json({ message: 'Error reading data' });
-    }
-    let churchData = JSON.parse(data);
+app.put('/api/households/:id', async (req, res) => {
+  try {
     const householdIdToUpdate = req.params.id;
     const updatedHouseholdData = req.body;
-
-    const householdIndex = churchData.households.findIndex(hh => hh.householdId === householdIdToUpdate);
-
-    if (householdIndex === -1) {
+    const { data, error } = await supabase.from('households').update(updatedHouseholdData).eq('householdId', householdIdToUpdate).select();
+    if (error) throw error;
+    if (data.length === 0) {
       return res.status(404).json({ message: 'Household not found' });
     }
-
-    // Update the household, preserving its original ID and coordinates if not provided in update
-    churchData.households[householdIndex] = { ...churchData.households[householdIndex], ...updatedHouseholdData };
-
-    fs.writeFile(dataFilePath, JSON.stringify(churchData, null, 2), 'utf8', (err) => {
-      if (err) {
-        console.error("Error writing data file:", err);
-        return res.status(500).json({ message: 'Error writing data' });
-      }
-      res.json(churchData.households[householdIndex]); // Send back the updated household
-    });
-  });
+    res.json(data[0]);
+  } catch (error) {
+    console.error("Error updating household in Supabase:", error.message);
+    res.status(500).json({ message: 'Error updating data' });
+  }
 });
 
 app.listen(PORT, () => {

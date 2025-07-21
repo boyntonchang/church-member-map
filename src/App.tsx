@@ -63,7 +63,7 @@ function App() {
       recenterButton.style.backgroundImage = 'url("/images/gps.png")';
       recenterButton.style.backgroundRepeat = 'no-repeat';
       recenterButton.style.backgroundPosition = 'center';
-      recenterButton.style.backgroundSize = '24px 24px';
+      recenterButton.style.backgroundSize = 'contain';
 
       recenterButton.onclick = () => {
         if (mapRef.current && churchData) {
