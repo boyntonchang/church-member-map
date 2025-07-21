@@ -158,11 +158,14 @@ function App() {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', padding: '1rem', paddingTop:'0',}}>
-      <Typography variant="h4" component="h1" align="center" sx={{ my: 2 }}>
-       Church Member Location
-      </Typography>
-      <Box sx={{ flexGrow: 1, position: 'relative', border: 'solid lightgray 0.2rem', borderRadius: '0.8rem', overflow: 'hidden', }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw',}}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', py: 1.6, backgroundColor: 'rgb(39 39 36)', color: 'rgb(228, 153, 50)', position: 'relative' }}>
+        <Box component="img" src="/images/on_degree_icon.avif" alt="Church Icon" sx={{ height: 40, position: 'absolute', left: 16 }} />
+        <Typography variant="h4" component="h1" align="center">
+         Church Member Location
+        </Typography>
+      </Box>
+      <Box sx={{ flexGrow: 1, position: 'relative', overflow: 'hidden', }}>
         <GoogleMap
           mapContainerStyle={{ width: '100%', height: '100%' }}
           center={churchData.churchInfo.coordinates}

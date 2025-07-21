@@ -12,6 +12,10 @@ document.head.appendChild(fontLink);
 
 const theme = createTheme({
   palette: {
+    primary: {
+      main: 'rgb(228, 153, 50)',
+      contrastText: '#ffffff', // Set text color to white
+    },
     background: {
       default: '#f4f6f8',
     },
