@@ -10,18 +10,16 @@ import {
 
 interface Props {
   open: boolean;
-  onLogin: (username: string) => void;
+  onLogin: (email: string, password: string) => void; // Changed to accept email and password
   onClose: () => void;
 }
 
 const LoginModal: React.FC<Props> = ({ open, onLogin, onClose }) => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState(''); // Changed from username to email
   const [password, setPassword] = useState('');
 
   const handleSubmit = () => {
-    // In a real application, you would send these credentials to a backend for authentication.
-    // For this example, we'll use a simple hardcoded check.
-    onLogin(username);
+    onLogin(email, password); // Pass email and password
   };
 
   return (
@@ -31,12 +29,12 @@ const LoginModal: React.FC<Props> = ({ open, onLogin, onClose }) => {
         <TextField
           autoFocus
           margin="dense"
-          label="Username"
-          type="text"
+          label="Email"
+          type="email"
           fullWidth
           variant="outlined"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <TextField
           margin="dense"

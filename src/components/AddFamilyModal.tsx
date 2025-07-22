@@ -9,6 +9,7 @@ import {
   Stack,
   Typography,
   IconButton,
+  Box,
 } from '@mui/material';
 import { Add, Delete } from '@mui/icons-material';
 import type { Household, Member } from '../types';
@@ -25,7 +26,7 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
   const [householdBio, setHouseholdBio] = useState('');
   const [address, setAddress] = useState('');
   const [members, setMembers] = useState<Omit<Member, 'memberId'>[]>([
-    { firstName: '', role: 'Head of Household' },
+    { firstName: '', role: 'Head of Household', photoUrl: '' },
   ]);
   const [ministries, setMinistries] = useState('');
   const [familyPhoto, setFamilyPhoto] = useState<File | null>(null);
@@ -36,17 +37,14 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
         setFamilyName(initialData.familyName);
         setHouseholdBio(initialData.householdBio);
         setAddress(initialData.address);
-        setMembers(initialData.members.map(member => ({ firstName: member.firstName, role: member.role })));
+        setMembers(initialData.members.map(member => ({ firstName: member.firstName, role: member.role, photoUrl: member.photoUrl || '' })));
         setMinistries(initialData.ministryInvolvement.join(', '));
-        // For familyPhoto, you might want to handle displaying the existing image or a placeholder
-        // For now, we'll just clear it or leave it as is.
         setFamilyPhoto(null);
       } else {
-        // Reset form for new entry
         setFamilyName('');
         setHouseholdBio('');
         setAddress('');
-        setMembers([{ firstName: '', role: 'Head of Household' }]);
+        setMembers([{ firstName: '', role: 'Head of Household', photoUrl: '' }]);
         setMinistries('');
         setFamilyPhoto(null);
       }
@@ -54,7 +52,7 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
   }, [open, initialData]);
 
   const handleAddMember = () => {
-    setMembers([...members, { firstName: '', role: '' }]);
+    setMembers([...members, { firstName: '', role: '', photoUrl: '' }]);
   };
 
   const handleRemoveMember = (index: number) => {
@@ -63,9 +61,9 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
   };
 
   const handleMemberChange = (index: number, field: keyof Omit<Member, 'memberId'>, value: string) => {
-    const newMembers = [...members];
+    const newMembers = [...members] as (Omit<Member, 'memberId'> & { [key: string]: any })[];
     newMembers[index][field] = value;
-    setMembers(newMembers);
+    setMembers(newMembers as Omit<Member, 'memberId'>[]);
   };
 
   const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,9 +73,9 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
   };
 
   const handleSubmit = () => {
-    const membersWithIds = members.map(member => ({
+    const membersWithIds = members.map((member, index) => ({
       ...member,
-      memberId: member.memberId || `mem_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, // Use existing ID or generate new
+      memberId: initialData?.members[index]?.memberId || `mem_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     }));
 
     const householdToSave = {
@@ -89,7 +87,7 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
       familyPhotoUrl: familyPhoto ? URL.createObjectURL(familyPhoto) : (initialData?.familyPhotoUrl || ''),
     };
     onSave(householdToSave);
-    onClose(); // Close modal after save
+    onClose();
   };
 
   return (
@@ -130,24 +128,38 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
           {familyPhoto && <Typography variant="body2">{familyPhoto.name}</Typography>}
 
           <Typography variant="h6">Family Members</Typography>
-          {members.map((member, index) => (
-            <Stack direction="row" spacing={1} key={index} alignItems="center">
-              <TextField
-                label="First Name"
-                value={member.firstName}
-                onChange={(e) => handleMemberChange(index, 'firstName', e.target.value)}
-              />
-              <TextField
-                label="Role"
-                value={member.role}
-                onChange={(e) => handleMemberChange(index, 'role', e.target.value)}
-              />
-              <IconButton onClick={() => handleRemoveMember(index)} disabled={members.length === 1}>
-                <Delete />
-              </IconButton>
-            </Stack>
-          ))}
-          <Button startIcon={<Add />} onClick={handleAddMember}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            {members.map((member, index) => (
+              <Box key={index} sx={{ flex: '1 1 calc(50% - 8px)', minWidth: '250px', border: '1px solid #ddd', p: 1.5, borderRadius: 1, position: 'relative' }}>
+                <Stack spacing={1}>
+                  <TextField
+                    label="First Name"
+                    value={member.firstName}
+                    onChange={(e) => handleMemberChange(index, 'firstName', e.target.value)}
+                    fullWidth
+                    size="small"
+                  />
+                  <TextField
+                    label="Role"
+                    value={member.role}
+                    onChange={(e) => handleMemberChange(index, 'role', e.target.value)}
+                    fullWidth
+                    size="small"
+                  />
+                  {members.length > 1 && (
+                    <IconButton
+                      onClick={() => handleRemoveMember(index)}
+                      size="small"
+                      sx={{ position: 'absolute', top: 4, right: 4 }}
+                    >
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  )}
+                </Stack>
+              </Box>
+            ))}
+          </Box>
+          <Button startIcon={<Add />} onClick={handleAddMember} sx={{ mt: 2 }}>
             Add Member
           </Button>
         </Stack>

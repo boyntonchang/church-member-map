@@ -25,9 +25,10 @@ interface Props {
   onClose: () => void;
   isAdminLoggedIn: boolean;
   onEditHousehold: (household: Household) => void;
+  onDeleteHousehold: (householdId: string) => void;
 }
 
-const HouseholdPopover: React.FC<Props> = ({ household, open, onClose, isAdminLoggedIn, onEditHousehold }) => {
+const HouseholdPopover: React.FC<Props> = ({ household, open, onClose, isAdminLoggedIn, onEditHousehold, onDeleteHousehold }) => {
   if (!household) return null;
 
   return (
@@ -48,14 +49,24 @@ const HouseholdPopover: React.FC<Props> = ({ household, open, onClose, isAdminLo
               {household.familyName}
             </Typography>
             {isAdminLoggedIn && (
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<EditIcon />}
-                onClick={() => onEditHousehold(household)}
-              >
-                Edit
-              </Button>
+              <Stack direction="row" spacing={1}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<EditIcon />}
+                  onClick={() => onEditHousehold(household)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  size="small"
+                  onClick={() => onDeleteHousehold(household.householdId)}
+                >
+                  Delete
+                </Button>
+              </Stack>
             )}
           </Box>
           <Typography variant="body2" color="text.secondary" fontStyle="italic">
@@ -66,9 +77,9 @@ const HouseholdPopover: React.FC<Props> = ({ household, open, onClose, isAdminLo
           <Typography variant="h6" component="h3" sx={{ mb: 1, fontSize: '1.1rem' }}>
             Family Members
           </Typography>
-          <List dense>
+          <List dense sx={{ display: 'flex', flexWrap: 'wrap', p: 0 }}>
             {household.members.map((member) => (
-              <ListItem key={member.memberId} disablePadding>
+              <ListItem key={member.memberId} disablePadding sx={{ width: '50%' }}>
                 <ListItemAvatar>
                   <Avatar src={member.photoUrl} alt={member.firstName} sx={{ width: 32, height: 32 }} />
                 </ListItemAvatar>

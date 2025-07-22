@@ -7,6 +7,7 @@ import AddFamilyModal from './components/AddFamilyModal';
 import LoginModal from './components/LoginModal';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faChurch } from '@fortawesome/free-solid-svg-icons';
+import { supabase } from './supabaseClient'; // Import Supabase client
 
 library.add(faChurch);
 
@@ -17,8 +18,20 @@ const mapOptions = {
   fullscreenControl: true,
 };
 
+const libraries: ("places" | "drawing" | "geometry" | "visualization")[] = ["places"];
+
 function App() {
-  const [churchData, setChurchData] = useState<ChurchData | null>(null);
+  const [churchData] = useState<ChurchData | null>({
+    churchInfo: {
+      name: "Bethany Church",
+      address: "605 Pascack Rd, Township of Washington, NJ 07676",
+      coordinates: {
+        lat: 40.9925866629098,
+        lng: -74.06081908529305,
+      },
+    },
+    households: [], // Households will be fetched from backend
+  });
   const [households, setHouseholds] = useState<Household[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [selectedHousehold, setSelectedHousehold] = useState<Household | null>(
@@ -28,9 +41,7 @@ function App() {
   const [isAddFamilyModalOpen, setIsAddFamilyModalOpen] = useState(false);
   const [householdToEdit, setHouseholdToEdit] = useState<Household | null>(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(
-    localStorage.getItem('isAdminLoggedIn') === 'true',
-  );
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false); // Default to false
   const mapRef = useRef<google.maps.Map | null>(null);
 
   const onLoad = useCallback(
@@ -77,38 +88,68 @@ function App() {
     [churchData],
   );
 
-  useEffect(() => {
-    const fetchHouseholds = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/api/households');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setHouseholds(data);
-        setIsLoadingData(false);
-      } catch (err) {
-        console.error('Failed to fetch household data from backend:', err);
-        setIsLoadingData(false);
+  // Function to check admin status
+  const checkAdminStatus = useCallback(async (userId: string) => {
+    console.log('Frontend: Checking admin status for userId:', userId);
+    try {
+      const response = await fetch(`http://localhost:3001/api/admin-check/${userId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
-
-    fetch('/members-location.json')
-      .then(res => res.json())
-      .then((data: ChurchData) => {
-        setChurchData(data);
-      })
-      .catch(err => {
-        console.error('Failed to fetch church info from local JSON:', err);
-      });
-
-    fetchHouseholds();
+      const data = await response.json();
+      console.log('Frontend: Admin check response:', data);
+      return data.isAdmin;
+    } catch (error) {
+      console.error('Frontend: Failed to check admin status:', error);
+      return false;
+    }
   }, []);
+
+  const fetchHouseholds = useCallback(async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/households');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const transformedHouseholds = data.map((household: any) => ({
+        ...household,
+        coordinates: { lat: household.lat, lng: household.lng },
+      }));
+      setHouseholds(transformedHouseholds);
+      setIsLoadingData(false);
+    } catch (err) {
+      console.error('Failed to fetch household data from backend:', err);
+      setIsLoadingData(false);
+    }
+  }, []); // Add dependencies if any, currently none for this simple fetch
+
+  useEffect(() => {
+    fetchHouseholds();
+
+    // Supabase Auth State Listener
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (_, session) => {
+        if (session) {
+          const user = session.user;
+          const admin = await checkAdminStatus(user.id);
+          setIsAdminLoggedIn(admin);
+        } else {
+          setIsAdminLoggedIn(false);
+        }
+      },
+    );
+
+    // Cleanup listener on component unmount
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [checkAdminStatus]); // Depend on checkAdminStatus
 
   const { isLoaded: isMapLoaded, loadError: mapLoadError } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY!,
-    libraries: ['places'],
+    libraries,
   });
 
   const handleMarkerClick = (household: Household) => {
@@ -137,7 +178,7 @@ function App() {
     setIsAddFamilyModalOpen(true);
   };
 
-  const handleSaveHousehold = async (
+  const handleSaveHousehold = useCallback(async (
     householdData: Omit<Household, 'householdId' | 'coordinates'>,
   ) => {
     if (!isMapLoaded) {
@@ -162,21 +203,31 @@ function App() {
           try {
             let response;
             if (householdToEdit) {
+              const url = `http://localhost:3001/api/households/${householdToEdit.householdId}`;
+              console.log('Frontend: Sending PUT request to:', url);
+              console.log('Frontend: Household data being sent:', householdWithCoords);
               response = await fetch(
-                `http://localhost:3001/api/households/${householdToEdit.householdId}`,
+                url,
                 {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
+                    // Include Authorization header for authenticated requests
+                    'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
                   },
                   body: JSON.stringify(householdWithCoords),
                 },
               );
             } else {
-              response = await fetch('http://localhost:3001/api/households', {
+              const url = 'http://localhost:3001/api/households';
+              console.log('Frontend: Sending POST request to:', url);
+              console.log('Frontend: Household data being sent:', householdWithCoords);
+              response = await fetch(url, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
+                  // Include Authorization header for authenticated requests
+                  'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
                 },
                 body: JSON.stringify(householdWithCoords),
               });
@@ -186,22 +237,11 @@ function App() {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const savedHousehold = await response.json();
+            await response.json();
 
-            if (householdToEdit) {
-              setHouseholds(prevHouseholds =>
-                prevHouseholds.map(hh =>
-                  hh.householdId === savedHousehold.householdId
-                    ? savedHousehold
-                    : hh,
-                ),
-              );
-            } else {
-              setHouseholds(prevHouseholds => [
-                ...prevHouseholds,
-                savedHousehold,
-              ]);
-            }
+            // Re-fetch all households to update the map
+            fetchHouseholds();
+
             handleAddFamilyModalClose();
           } catch (error) {
             console.error('Error saving household:', error);
@@ -216,23 +256,68 @@ function App() {
         }
       },
     );
-  };
+  }, [isMapLoaded, householdToEdit, supabase, setHouseholds, handleAddFamilyModalClose, churchData, fetchHouseholds]);
 
-  const handleLogin = (username: string) => {
-    if (username === 'admin') {
-      setIsAdminLoggedIn(true);
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+      console.log('User logged in:', data.user);
       setIsLoginModalOpen(false);
-      localStorage.setItem('isAdminLoggedIn', 'true');
-    } else {
-      alert('Invalid username or password.');
+      // isAdminLoggedIn will be updated by the auth state listener
+    } catch (error: any) {
+      alert(`Login failed: ${error.message}`);
     }
   };
 
-  const handleLogout = () => {
-    setIsAdminLoggedIn(false);
-    setIsLoginModalOpen(true);
-    localStorage.removeItem('isAdminLoggedIn');
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      console.log('User logged out');
+      setIsAdminLoggedIn(false); // Explicitly set to false on logout
+      setIsLoginModalOpen(true); // Show login modal on logout
+    } catch (error: any) {
+      console.error('Logout failed:', error.message);
+      alert('Logout failed. Please try again.');
+    }
   };
+
+  const handleDeleteHousehold = useCallback(async (householdId: string) => {
+    if (!window.confirm('Are you sure you want to delete this household?')) {
+      return;
+    }
+    try {
+      const session = await supabase.auth.getSession();
+      const accessToken = session.data.session?.access_token;
+
+      if (!accessToken) {
+        alert('You must be logged in to delete households.');
+        return;
+      }
+
+      const response = await fetch(`http://localhost:3001/api/households/${householdId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      console.log(`Household ${householdId} deleted successfully.`);
+      fetchHouseholds(); // Re-fetch households to update the map
+      handleCloseHouseholdModal(); // Close the popover
+    } catch (error) {
+      console.error('Error deleting household:', error);
+      alert('Failed to delete household. Please try again.');
+    }
+  }, [fetchHouseholds, handleCloseHouseholdModal, supabase]);
 
   const [churchWidth, churchHeight, , , churchSvgPathData] = faChurch.icon;
   const churchIconSvg = `<svg viewBox="0 0 ${churchWidth} ${churchHeight}" xmlns="http://www.w3.org/2000/svg"><path d="${
@@ -370,6 +455,7 @@ function App() {
         onClose={handleCloseHouseholdModal}
         isAdminLoggedIn={isAdminLoggedIn}
         onEditHousehold={handleEditHousehold}
+        onDeleteHousehold={handleDeleteHousehold} // Pass the new handler
       />
 
       <AddFamilyModal
