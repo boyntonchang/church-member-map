@@ -79,6 +79,7 @@ function App() {
       recenterButton.onclick = () => {
         if (mapRef.current && churchData) {
           mapRef.current.panTo(churchData.churchInfo.coordinates);
+          mapRef.current.setZoom(12); // Set zoom level to 12
         }
       };
       map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(
