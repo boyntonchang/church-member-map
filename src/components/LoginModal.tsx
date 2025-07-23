@@ -6,7 +6,9 @@ import {
   DialogActions,
   Button,
   TextField,
+  IconButton,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface Props {
   open: boolean;
@@ -24,7 +26,22 @@ const LoginModal: React.FC<Props> = ({ open, onLogin, onClose }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth disableEscapeKeyDown>
-      <DialogTitle>Admin Login</DialogTitle>
+      <DialogTitle>
+        Admin Login
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+            backgroundColor: 'white',
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
       <DialogContent>
         <TextField
           autoFocus

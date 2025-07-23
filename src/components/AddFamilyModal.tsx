@@ -11,7 +11,7 @@ import {
   IconButton,
   Box,
 } from '@mui/material';
-import { Add, Delete } from '@mui/icons-material';
+import { Add, Delete, Close as CloseIcon } from '@mui/icons-material';
 import type { Household, Member } from '../types';
 
 interface Props {
@@ -92,7 +92,22 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{initialData ? 'Edit Family' : 'Add New Family'}</DialogTitle>
+      <DialogTitle>
+        {initialData ? 'Edit Family' : 'Add New Family'}
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+            backgroundColor: 'white',
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 2 }}>
           <TextField

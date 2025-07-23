@@ -14,9 +14,11 @@ import {
   Stack,
   Chip,
   Box,
-  Button
+  Button,
+  IconButton
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import CloseIcon from '@mui/icons-material/Close';
 import type { Household } from '../types';
 
 interface Props {
@@ -32,7 +34,21 @@ const HouseholdPopover: React.FC<Props> = ({ household, open, onClose, isAdminLo
   if (!household) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} sx={{ '& .MuiDialog-paper': { maxHeight: '90vh' },  }}>
+    <Dialog open={open} onClose={onClose} sx={{ '& .MuiDialog-paper': { maxHeight: '90vh', position: 'relative' },  }}>
+      <IconButton
+        aria-label="close"
+        onClick={onClose}
+        sx={{
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: (theme: any) => theme.palette.grey[500],
+          backgroundColor: 'white',
+          zIndex: 1, // Ensure it's above other content
+        }}
+      >
+        <CloseIcon />
+      </IconButton>
       <Card sx={{ display: 'flex', flexDirection: 'column', flex: '1 1 auto', width: '100%', minWidth: 600, maxWidth: 600, borderRadius: 0 }}>
         {household.familyPhotoUrl && (
           <CardMedia
