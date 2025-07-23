@@ -74,15 +74,15 @@ function App() {
       recenterButton.style.justifyContent = 'center';
       recenterButton.style.alignItems = 'center';
 
-      recenterButton.style.backgroundImage = 'url("/images/gps.png")';
+      recenterButton.style.backgroundImage = 'url("/images/gps-RE.png")';
       recenterButton.style.backgroundRepeat = 'no-repeat';
       recenterButton.style.backgroundPosition = 'center';
-      recenterButton.style.backgroundSize = 'contain';
+      recenterButton.style.backgroundSize = '70%';
 
       recenterButton.onclick = () => {
         if (mapRef.current && churchData) {
+          mapRef.current.setZoom(12); // Set zoom level to 12 first
           mapRef.current.panTo(churchData.churchInfo.coordinates);
-          mapRef.current.setZoom(12); // Set zoom level to 12
         }
       };
       map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(
