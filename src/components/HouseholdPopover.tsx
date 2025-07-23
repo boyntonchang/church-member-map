@@ -15,10 +15,13 @@ import {
   Chip,
   Box,
   Button,
-  IconButton
+  IconButton,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
 import type { Household } from '../types';
 
 interface Props {
@@ -31,6 +34,8 @@ interface Props {
 }
 
 const HouseholdPopover: React.FC<Props> = ({ household, open, onClose, isAdminLoggedIn, onEditHousehold, onDeleteHousehold }) => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   if (!household) return null;
@@ -64,11 +69,11 @@ const HouseholdPopover: React.FC<Props> = ({ household, open, onClose, isAdminLo
       >
         <CloseIcon />
       </IconButton>
-      <Card sx={{ display: 'flex', flexDirection: 'column', flex: '1 1 auto', width: '100%', minWidth: 600, maxWidth: 600, borderRadius: 0 }}>
+      <Card sx={{ display: 'flex', flexDirection: 'column', flex: '1 1 auto', width: '100%', minWidth: isSmallScreen ? 'auto' : 600, maxWidth: isSmallScreen ? 'auto' : 600, borderRadius: 0 }}>
         {household.familyPhotoUrl && (
           <CardMedia
             component="img"
-            height="320px"
+            height={isSmallScreen ? "200px" : "320px"}
             image={household.familyPhotoUrl}
             alt={`${household.familyName} photo`}
             sx={{ flexShrink: 0, objectFit: 'cover' }}
@@ -81,22 +86,34 @@ const HouseholdPopover: React.FC<Props> = ({ household, open, onClose, isAdminLo
             </Typography>
             {isAdminLoggedIn && (
               <Stack direction="row" spacing={1}>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  startIcon={<EditIcon />}
-                  onClick={() => onEditHousehold(household)}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="error"
-                  size="small"
-                  onClick={handleDeleteClick}
-                >
-                  Delete
-                </Button>
+                {isSmallScreen ? (
+                  <IconButton color="primary" size="small" onClick={() => onEditHousehold(household)}>
+                    <EditIcon />
+                  </IconButton>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<EditIcon />}
+                    onClick={() => onEditHousehold(household)}
+                  >
+                    Edit
+                  </Button>
+                )}
+                {isSmallScreen ? (
+                  <IconButton color="error" size="small" onClick={handleDeleteClick}>
+                    <DeleteIcon />
+                  </IconButton>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    size="small"
+                    onClick={handleDeleteClick}
+                  >
+                    Delete
+                  </Button>
+                )}
               </Stack>
             )}
           </Box>
@@ -109,7 +126,7 @@ const HouseholdPopover: React.FC<Props> = ({ household, open, onClose, isAdminLo
               </Stack>
             </Stack>
           ) : (
-            <Typography variant="body2" color="text.secondary" fontStyle="italic">
+            <Typography variant="body2" color="text.secondary" fontStyle="italic" sx={{ wordWrap: 'break-word' }}>
               "{household.householdBio}"
             </Typography>
           )}
@@ -120,7 +137,7 @@ const HouseholdPopover: React.FC<Props> = ({ household, open, onClose, isAdminLo
           </Typography>
           <List dense sx={{ display: 'flex', flexWrap: 'wrap', p: 0 }}>
             {household.members.map((member) => (
-              <ListItem key={member.memberId} disablePadding sx={{ width: '50%' }}>
+              <ListItem key={member.memberId} disablePadding sx={{ width: isSmallScreen ? '100%' : '50%' }}>
                 <ListItemAvatar>
                   <Avatar src={member.photoUrl} alt={member.firstName} sx={{ width: 32, height: 32 }} />
                 </ListItemAvatar>

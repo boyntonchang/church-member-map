@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleMap, useJsApiLoader, MarkerF } from '@react-google-maps/api';
-import { Box, Typography, Paper, CircularProgress, Button } from '@mui/material';
+import { Box, Typography, Paper, CircularProgress, Button, IconButton, useMediaQuery, useTheme } from '@mui/material';
+import { Add as AddIcon, Logout as LogoutIcon } from '@mui/icons-material';
 import type { Household, ChurchData } from './types';
 import HouseholdPopover from './components/HouseholdPopover';
 import AddFamilyModal from './components/AddFamilyModal';
@@ -21,6 +22,8 @@ const mapOptions = {
 const libraries: ("places" | "drawing" | "geometry" | "visualization")[] = ["places"];
 
 function App() {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [churchData] = useState<ChurchData | null>({
     churchInfo: {
       name: "Bethany Church",
@@ -360,22 +363,61 @@ function App() {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
           py: 1.6,
+          px: 2,
           backgroundColor: 'rgb(39 39 36)',
           color: 'rgb(228, 153, 50)',
-          position: 'relative',
         }}
       >
         <Box
           component="img"
           src="/images/on_degree_icon.avif"
           alt="Church Icon"
-          sx={{ height: 40, position: 'absolute', left: 16 }}
+          sx={{ height: 40, mr: 2 }}
         />
-        <Typography variant="h4" component="h1" align="center">
+        <Typography
+          variant="h4"
+          component="h1"
+          align="center"
+          sx={{
+            fontSize: { xs: '1.2rem', sm: '1.5rem', md: '2.125rem' },
+            flexGrow: 1, // Allow typography to grow and push buttons to the right
+          }}
+        >
           Church Member Location
         </Typography>
+        {isAdminLoggedIn ? (
+          <Box sx={{ display: 'flex', gap: 1, ml: 2 }}>
+            {isSmallScreen ? (
+              <IconButton color="primary" onClick={handleAddFamilyModalOpen}>
+                <AddIcon />
+              </IconButton>
+            ) : (
+              <Button variant="contained" onClick={handleAddFamilyModalOpen}>
+                Add New Family
+              </Button>
+            )}
+            {isSmallScreen ? (
+              <IconButton color="primary" onClick={handleLogout}>
+                <LogoutIcon />
+              </IconButton>
+            ) : (
+              <Button variant="outlined" onClick={handleLogout}>
+                Logout
+              </Button>
+            )}
+          </Box>
+        ) : (
+          <Box sx={{ ml: 2 }}>
+            <Button
+              variant="contained"
+              onClick={() => setIsLoginModalOpen(true)}
+            >
+              Login
+            </Button>
+          </Box>
+        )}
       </Box>
       <Box sx={{ flexGrow: 1, position: 'relative', overflow: 'hidden' }}>
         <GoogleMap
@@ -417,35 +459,6 @@ function App() {
           <Typography variant="subtitle1">Member Location</Typography>
         </Paper>
       </Box>
-
-      {isAdminLoggedIn && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 16,
-            right: 16,
-            display: 'flex',
-            gap: 1,
-          }}
-        >
-          <Button variant="contained" onClick={handleAddFamilyModalOpen}>
-            Add New Family
-          </Button>
-          <Button variant="outlined" onClick={handleLogout}>
-            Logout
-          </Button>
-        </Box>
-      )}
-      {!isAdminLoggedIn && (
-        <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
-          <Button
-            variant="contained"
-            onClick={() => setIsLoginModalOpen(true)}
-          >
-            Login
-          </Button>
-        </Box>
-      )}
 
       <HouseholdPopover
         household={selectedHousehold}

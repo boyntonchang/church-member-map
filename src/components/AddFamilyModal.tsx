@@ -165,9 +165,9 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
                     <IconButton
                       onClick={() => handleRemoveMember(index)}
                       size="small"
-                      sx={{ position: 'absolute', top: 4, right: 4 }}
+                      sx={{ position: 'absolute', top: 4, right: 4, marginRight: '8px' }}
                     >
-                      <Delete fontSize="small" />
+                      <Delete fontSize="small" sx={{ marginTop: '5px' }} />
                     </IconButton>
                   )}
                 </Stack>
@@ -179,7 +179,7 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
           </Button>
         </Stack>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ p: 2, backgroundColor: 'currentColor' }}>
         <Button onClick={onClose}>Cancel</Button>
         <Button onClick={handleSubmit} variant="contained">Save</Button>
       </DialogActions>
