@@ -68,10 +68,10 @@ const HouseholdPopover: React.FC<Props> = ({ household, open, onClose, isAdminLo
         {household.familyPhotoUrl && (
           <CardMedia
             component="img"
-            height="auto"
+            height="320px"
             image={household.familyPhotoUrl}
             alt={`${household.familyName} photo`}
-            sx={{ flexShrink: 0 }}
+            sx={{ flexShrink: 0, objectFit: 'cover' }}
           />
         )}
         <CardContent sx={{ overflowY: 'auto', flex: '1 1 auto' }}>
