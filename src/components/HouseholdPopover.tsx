@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   Card,
@@ -31,7 +31,22 @@ interface Props {
 }
 
 const HouseholdPopover: React.FC<Props> = ({ household, open, onClose, isAdminLoggedIn, onEditHousehold, onDeleteHousehold }) => {
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+
   if (!household) return null;
+
+  const handleDeleteClick = () => {
+    setShowConfirmDelete(true);
+  };
+
+  const handleConfirmDelete = () => {
+    onDeleteHousehold(household.householdId);
+    setShowConfirmDelete(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirmDelete(false);
+  };
 
   return (
     <Dialog open={open} onClose={onClose} sx={{ '& .MuiDialog-paper': { maxHeight: '90vh', position: 'relative' },  }}>
@@ -78,16 +93,26 @@ const HouseholdPopover: React.FC<Props> = ({ household, open, onClose, isAdminLo
                   variant="outlined"
                   color="error"
                   size="small"
-                  onClick={() => onDeleteHousehold(household.householdId)}
+                  onClick={handleDeleteClick}
                 >
                   Delete
                 </Button>
               </Stack>
             )}
           </Box>
-          <Typography variant="body2" color="text.secondary" fontStyle="italic">
-            "{household.householdBio}"
-          </Typography>
+          {showConfirmDelete ? (
+            <Stack spacing={2} sx={{ mt: 2, p: 2, border: '1px solid red', borderRadius: 1 }}>
+              <Typography variant="body1" color="error">Are you sure you want to delete this household?</Typography>
+              <Stack direction="row" spacing={1} justifyContent="flex-end">
+                <Button variant="outlined" onClick={handleCancelDelete}>Cancel</Button>
+                <Button variant="contained" color="error" onClick={handleConfirmDelete}>Confirm Delete</Button>
+              </Stack>
+            </Stack>
+          ) : (
+            <Typography variant="body2" color="text.secondary" fontStyle="italic">
+              "{household.householdBio}"
+            </Typography>
+          )}
           
           <Divider sx={{ my: 2 }} />
           <Typography variant="h6" component="h3" sx={{ mb: 1, fontSize: '1.1rem' }}>

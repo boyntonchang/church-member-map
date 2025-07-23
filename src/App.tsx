@@ -288,9 +288,6 @@ function App() {
   };
 
   const handleDeleteHousehold = useCallback(async (householdId: string) => {
-    if (!window.confirm('Are you sure you want to delete this household?')) {
-      return;
-    }
     try {
       const session = await supabase.auth.getSession();
       const accessToken = session.data.session?.access_token;
