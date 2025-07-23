@@ -45,7 +45,9 @@ function App() {
   const [householdToEdit, setHouseholdToEdit] = useState<Household | null>(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false); // Default to false
+  const [isChurchInfoOpen, setIsChurchInfoOpen] = useState(false);
   const mapRef = useRef<google.maps.Map | null>(null);
+  const churchInfoPopoverRef = useRef<HTMLDivElement>(null);
 
   const onLoad = useCallback(
     (map: google.maps.Map) => {
@@ -131,6 +133,14 @@ function App() {
   useEffect(() => {
     fetchHouseholds();
 
+    const handleClickOutside = (event: MouseEvent) => {
+      if (churchInfoPopoverRef.current && !churchInfoPopoverRef.current.contains(event.target as Node)) {
+        setIsChurchInfoOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
     // Supabase Auth State Listener
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (_, session) => {
@@ -147,8 +157,9 @@ function App() {
     // Cleanup listener on component unmount
     return () => {
       authListener.subscription.unsubscribe();
+      document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [checkAdminStatus]); // Depend on checkAdminStatus
+  }, [checkAdminStatus, churchInfoPopoverRef]); // Depend on checkAdminStatus
 
   const { isLoaded: isMapLoaded, loadError: mapLoadError } = useJsApiLoader({
     id: 'google-map-script',
@@ -437,27 +448,47 @@ function App() {
           ))}
           <MarkerF
             position={churchData.churchInfo.coordinates}
-            title={churchData.churchInfo.name}
+            title="ONDO church!"
             icon={{
               url: churchIconDataUrl,
               scaledSize: new window.google.maps.Size(40, 40),
             }}
+            onClick={() => setIsChurchInfoOpen(!isChurchInfoOpen)}
           />
         </GoogleMap>
 
-        <Paper
-          elevation={4}
-          sx={{
-            position: 'absolute',
-            top: 16,
-            left: 16,
-            p: 2,
-            display: 'none',
-          }}
-        >
-          <Typography variant="h5">{churchData.churchInfo.name}</Typography>
-          <Typography variant="subtitle1">Member Location</Typography>
-        </Paper>
+        {isChurchInfoOpen && (
+          <Paper
+            ref={churchInfoPopoverRef}
+            elevation={4}
+            sx={{
+              position: 'absolute',
+              top: 'calc(50% - 80px)', // Adjusted to be above the icon
+              left: '50%',
+              transform: 'translateX(-50%)',
+              p: 1, // Smaller padding
+              textAlign: 'center',
+              zIndex: 1,
+              backgroundColor: 'white',
+              borderRadius: '4px',
+              boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                bottom: '-10px', // Size of the triangle
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: 0,
+                height: 0,
+                borderLeft: '10px solid transparent',
+                borderRight: '10px solid transparent',
+                borderTop: '10px solid white', // Color of the triangle
+              },
+            }}
+          >
+            <Typography variant="body1">ONDO church!</Typography>
+          </Paper>
+        )}
       </Box>
 
       <HouseholdPopover
