@@ -63,7 +63,7 @@ const LoginModal: React.FC<Props> = ({ open, onLogin, onClose }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ p: 2, backgroundColor: 'currentColor' }}>
         <Button onClick={onClose}>Cancel</Button>
         <Button onClick={handleSubmit} variant="contained" color="primary">
           Login
