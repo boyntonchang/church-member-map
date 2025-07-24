@@ -113,7 +113,7 @@ function App() {
 
   const fetchHouseholds = useCallback(async () => {
     try {
-      const response = await fetch('/.netlify/functions/api/households');
+      const response = await fetch('http://localhost:3001/api/households');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -220,7 +220,8 @@ function App() {
             if (householdToEdit) {
               const url = `http://localhost:3001/api/households/${householdToEdit.householdId}`;
               console.log('Frontend: Sending PUT request to:', url);
-              console.log('Frontend: Household data being sent:', householdWithCoords);
+              console.log('Frontend: Household data being sent (object):', householdWithCoords);
+              console.log('Frontend: Household data being sent (JSON):', JSON.stringify(householdWithCoords));
               response = await fetch(
                 url,
                 {
