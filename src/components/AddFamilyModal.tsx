@@ -165,7 +165,7 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
                     <IconButton
                       onClick={() => handleRemoveMember(index)}
                       size="small"
-                      sx={{ position: 'absolute', top: 4, right: 4, marginRight: '8px' }}
+                      sx={{ position: 'absolute', top: 4, right: 12, marginRight: '8px' }}
                     >
                       <Delete fontSize="small" sx={{ marginTop: '5px' }} />
                     </IconButton>
