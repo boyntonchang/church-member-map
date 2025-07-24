@@ -19,7 +19,7 @@ const supabaseAdmin = createClient(
 
 // Middleware
 app.use(cors({
-  origin: 'https://church-members-map.vercel.app',
+  origin: 'https://church-members-map.netlify.app',
   allowedHeaders: ['authorization', 'x-client-info', 'apikey', 'content-type'],
 }));
 app.use(express.json());
