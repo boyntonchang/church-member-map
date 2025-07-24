@@ -18,7 +18,10 @@ const supabaseAdmin = createClient(
 );
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  allowedHeaders: ['authorization', 'x-client-info', 'apikey', 'content-type'],
+}));
 app.use(express.json());
 
 // Middleware to authenticate and get user from token
