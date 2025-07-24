@@ -113,7 +113,7 @@ function App() {
 
   const fetchHouseholds = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/households');
+      const response = await fetch('/.netlify/functions/api/households');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
