@@ -98,7 +98,7 @@ function App() {
   const checkAdminStatus = useCallback(async (userId: string) => {
     console.log('Frontend: Checking admin status for userId:', userId);
     try {
-      const response = await fetch(`http://localhost:3001/api/admin-check/${userId}`);
+      const response = await fetch(`/.netlify/functions/admin-check/${userId}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -113,7 +113,7 @@ function App() {
 
   const fetchHouseholds = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/households');
+      const response = await fetch('/.netlify/functions/get-households');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -218,7 +218,7 @@ function App() {
           try {
             let response;
             if (householdToEdit) {
-              const url = `http://localhost:3001/api/households/${householdToEdit.householdId}`;
+              const url = `/.netlify/functions/update-household/${householdToEdit.householdId}`;
               console.log('Frontend: Sending PUT request to:', url);
               console.log('Frontend: Household data being sent (object):', householdWithCoords);
               console.log('Frontend: Household data being sent (JSON):', JSON.stringify(householdWithCoords));
@@ -235,7 +235,7 @@ function App() {
                 },
               );
             } else {
-              const url = 'http://localhost:3001/api/households';
+              const url = '/.netlify/functions/add-household';
               console.log('Frontend: Sending POST request to:', url);
               console.log('Frontend: Household data being sent:', householdWithCoords);
               response = await fetch(url, {
@@ -312,7 +312,7 @@ function App() {
         return;
       }
 
-      const response = await fetch(`http://localhost:3001/api/households/${householdId}`, {
+      const response = await fetch(`/.netlify/functions/delete-household/${householdId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
