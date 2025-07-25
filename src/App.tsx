@@ -7,6 +7,7 @@ import HouseholdPopover from './components/HouseholdPopover';
 import AddFamilyModal from './components/AddFamilyModal';
 import LoginModal from './components/LoginModal';
 import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChurch } from '@fortawesome/free-solid-svg-icons';
 import { supabase } from './supabaseClient'; // Import Supabase client
 
@@ -401,7 +402,7 @@ function App() {
           color: 'rgb(228, 153, 50)',
         }}
       >
-        <Box
+                <Box
           component="img"
           src="/images/on_degree_icon.avif"
           alt="Church Icon"
