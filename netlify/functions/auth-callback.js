@@ -30,7 +30,10 @@ exports.handler = async (event) => {
       return {
         statusCode: 302,
         headers: {
-          'Set-Cookie': `sb-access-token=${session.access_token}; ${cookieOptions}`,
+          'Set-Cookie': [
+            `sb-access-token=${session.access_token}; ${cookieOptions}`,
+            `sb-refresh-token=${session.refresh_token}; ${cookieOptions}`,
+          ],
           'Location': '/', // Redirect back to your app's root
         },
       };
