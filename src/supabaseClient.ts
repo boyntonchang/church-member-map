@@ -8,5 +8,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,
+    redirectTo: 'YOUR_NETLIFY_SITE_URL/.netlify/functions/auth-callback',
   },
 });
