@@ -1,7 +1,7 @@
 const { supabaseAdmin } = require('./utilities');
 
 exports.handler = async (event) => {
-  const { userId } = event.path.split('/').pop(); // Extract userId from path
+  const userId = event.path.split('/').pop(); // Extract userId from path
 
   if (!userId) {
     return {
