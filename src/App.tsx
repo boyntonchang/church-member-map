@@ -131,6 +131,25 @@ function App() {
   }, []); // Add dependencies if any, currently none for this simple fetch
 
   useEffect(() => {
+    const initializeSession = async () => {
+      try {
+        const response = await fetch('/.netlify/functions/get-session');
+        const { session } = await response.json();
+
+        if (session) {
+          await supabase.auth.setSession(session);
+          const admin = await checkAdminStatus(session.user.id);
+          setIsAdminLoggedIn(admin);
+        } else {
+          setIsAdminLoggedIn(false);
+        }
+      } catch (error) {
+        console.error('Error initializing session from Netlify Function:', error);
+        setIsAdminLoggedIn(false);
+      }
+    };
+
+    initializeSession();
     fetchHouseholds();
 
     const handleClickOutside = (event: MouseEvent) => {
