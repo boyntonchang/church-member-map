@@ -25,6 +25,7 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
   const [familyName, setFamilyName] = useState('');
   const [householdBio, setHouseholdBio] = useState('');
   const [address, setAddress] = useState('');
+  const [careGroupName, setCareGroupName] = useState(''); // New state for care group name
   const [members, setMembers] = useState<Omit<Member, 'memberId'>[]>([
     { firstName: '', role: 'Head of Household', photoUrl: '' },
   ]);
@@ -40,6 +41,7 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
         setMembers(initialData.members.map(member => ({ firstName: member.firstName, role: member.role, photoUrl: member.photoUrl || '' })));
         setMinistries(initialData.ministryInvolvement.join(', '));
         setFamilyPhoto(null);
+        setCareGroupName(initialData.careGroupName || ''); // Initialize care group name
       } else {
         setFamilyName('');
         setHouseholdBio('');
@@ -47,6 +49,7 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
         setMembers([{ firstName: '', role: 'Head of Household', photoUrl: '' }]);
         setMinistries('');
         setFamilyPhoto(null);
+        setCareGroupName(''); // Clear care group name
       }
     }
   }, [open, initialData]);
@@ -85,6 +88,7 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
       members: membersWithIds,
       ministryInvolvement: ministries.split(',').map(m => m.trim()).filter(m => m),
       familyPhotoUrl: familyPhoto ? URL.createObjectURL(familyPhoto) : (initialData?.familyPhotoUrl || ''),
+      careGroupName, // Include care group name
     };
     onSave(householdToSave);
     onClose();
@@ -120,6 +124,12 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
             label="Address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
+            fullWidth
+          />
+          <TextField
+            label="Care Group Name"
+            value={careGroupName}
+            onChange={(e) => setCareGroupName(e.target.value)}
             fullWidth
           />
           <TextField

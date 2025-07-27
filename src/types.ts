@@ -19,6 +19,7 @@ export interface Household {
   householdBio: string;
   ministryInvolvement: string[];
   members: Member[];
+  careGroupName: string;
 }
 
 export interface ChurchInfo {

@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleMap, useJsApiLoader, MarkerF } from '@react-google-maps/api';
 import { Box, Typography, Paper, CircularProgress, Button, IconButton, useMediaQuery, useTheme } from '@mui/material';
-import { Add as AddIcon, Logout as LogoutIcon } from '@mui/icons-material';
+import { Add as AddIcon, Logout as LogoutIcon, FilterList as FilterListIcon } from '@mui/icons-material';
 import type { Household, ChurchData } from './types';
 import HouseholdPopover from './components/HouseholdPopover';
 import AddFamilyModal from './components/AddFamilyModal';
 import LoginModal from './components/LoginModal';
+import CareGroupFilter from './components/CareGroupFilter'; // New import
 import { library } from '@fortawesome/fontawesome-svg-core';
 
 import { faChurch } from '@fortawesome/free-solid-svg-icons';
@@ -47,6 +48,8 @@ function App() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false); // Default to false
   const [isChurchInfoOpen, setIsChurchInfoOpen] = useState(false);
+  const [showCareGroupFilter, setShowCareGroupFilter] = useState(false); // New state for care group filter
+  const [selectedCareGroup, setSelectedCareGroup] = useState<string | null>(null); // New state for selected care group
   const mapRef = useRef<google.maps.Map | null>(null);
   const churchInfoPopoverRef = useRef<HTMLDivElement>(null);
 
@@ -199,6 +202,7 @@ function App() {
   const handleAddFamilyModalOpen = () => {
     setHouseholdToEdit(null);
     setIsAddFamilyModalOpen(true);
+    setShowCareGroupFilter(false); // Close care group filter
   };
 
   const handleAddFamilyModalClose = () => {
@@ -316,6 +320,7 @@ function App() {
       console.log('User logged out');
       setIsAdminLoggedIn(false); // Explicitly set to false on logout
       setIsLoginModalOpen(true); // Show login modal on logout
+      setShowCareGroupFilter(false); // Close care group filter
     } catch (error: any) {
       console.error('Logout failed:', error.message);
       alert('Logout failed. Please try again.');
@@ -419,37 +424,46 @@ function App() {
         >
           Church Member Location
         </Typography>
-        {isAdminLoggedIn ? (
-          <Box sx={{ display: 'flex', gap: 1, ml: 2 }}>
-            {isSmallScreen ? (
-              <IconButton color="primary" onClick={handleAddFamilyModalOpen}>
-                <AddIcon />
-              </IconButton>
-            ) : (
-              <Button variant="contained" onClick={handleAddFamilyModalOpen}>
-                Add New Family
-              </Button>
-            )}
-            {isSmallScreen ? (
-              <IconButton color="primary" onClick={handleLogout}>
-                <LogoutIcon />
-              </IconButton>
-            ) : (
-              <Button variant="outlined" onClick={handleLogout}>
-                Logout
-              </Button>
-            )}
-          </Box>
-        ) : (
-          <Box sx={{ ml: 2 }}>
+        <Box sx={{ display: 'flex', gap: 1, ml: 2 }}>
+          {isSmallScreen ? (
+            <IconButton color="primary" onClick={() => setShowCareGroupFilter(!showCareGroupFilter)}>
+              <FilterListIcon />
+            </IconButton>
+          ) : (
+            <Button variant="contained" onClick={() => setShowCareGroupFilter(!showCareGroupFilter)}>
+              Care Groups
+            </Button>
+          )}
+          {isAdminLoggedIn ? (
+            <>
+              {isSmallScreen ? (
+                <IconButton color="primary" onClick={handleAddFamilyModalOpen}>
+                  <AddIcon />
+                </IconButton>
+              ) : (
+                <Button variant="contained" onClick={handleAddFamilyModalOpen}>
+                  Add New Family
+                </Button>
+              )}
+              {isSmallScreen ? (
+                <IconButton color="primary" onClick={handleLogout}>
+                  <LogoutIcon />
+                </IconButton>
+              ) : (
+                <Button variant="outlined" onClick={handleLogout}>
+                  Logout
+                </Button>
+              )}
+            </>
+          ) : (
             <Button
               variant="contained"
               onClick={() => setIsLoginModalOpen(true)}
             >
               Login
             </Button>
-          </Box>
-        )}
+          )}
+        </Box>
       </Box>
       <Box sx={{ flexGrow: 1, position: 'relative', overflow: 'hidden' }}>
         <GoogleMap
@@ -459,14 +473,20 @@ function App() {
           options={mapOptions}
           onLoad={onLoad}
         >
-          {households.map(household => (
-            <MarkerF
-              key={household.householdId}
-              position={household.coordinates}
-              title={household.familyName}
-              onClick={() => handleMarkerClick(household)}
-            />
-          ))}
+          {households
+            .filter(household =>
+              selectedCareGroup
+                ? household.careGroupName.trim().toLowerCase() === selectedCareGroup
+                : true,
+            )
+            .map(household => (
+              <MarkerF
+                key={household.householdId}
+                position={household.coordinates}
+                title={household.familyName}
+                onClick={() => handleMarkerClick(household)}
+              />
+            ))}
           <MarkerF
             position={churchData.churchInfo.coordinates}
             title="ONDO church!"
@@ -477,6 +497,15 @@ function App() {
             onClick={() => setIsChurchInfoOpen(!isChurchInfoOpen)}
           />
         </GoogleMap>
+
+        {showCareGroupFilter && (
+          <CareGroupFilter
+            households={households}
+            onSelectCareGroup={setSelectedCareGroup}
+            selectedCareGroup={selectedCareGroup}
+            onClose={() => setShowCareGroupFilter(false)}
+          />
+        )}
 
         {isChurchInfoOpen && (
           <Paper
