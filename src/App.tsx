@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleMap, useJsApiLoader, MarkerF } from '@react-google-maps/api';
 import { Box, Typography, Paper, CircularProgress, Button, IconButton, useMediaQuery, useTheme } from '@mui/material';
-import { Add as AddIcon, Logout as LogoutIcon, FilterList as FilterListIcon } from '@mui/icons-material';
+import { Add as AddIcon, Logout as LogoutIcon, FilterList as FilterListIcon, Login as LoginIcon } from '@mui/icons-material';
 import type { Household, ChurchData } from './types';
 import HouseholdPopover from './components/HouseholdPopover';
 import AddFamilyModal from './components/AddFamilyModal';
@@ -456,12 +456,20 @@ function App() {
               )}
             </>
           ) : (
-            <Button
-              variant="contained"
-              onClick={() => setIsLoginModalOpen(true)}
-            >
-              Login
-            </Button>
+            <Box sx={{ ml: 2 }}>
+              {isSmallScreen ? (
+                <IconButton color="primary" onClick={() => setIsLoginModalOpen(true)}>
+                  <LoginIcon />
+                </IconButton>
+              ) : (
+                <Button
+                  variant="contained"
+                  onClick={() => setIsLoginModalOpen(true)}
+                >
+                  Login
+                </Button>
+              )}
+            </Box>
           )}
         </Box>
       </Box>
