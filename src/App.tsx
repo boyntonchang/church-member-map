@@ -86,8 +86,15 @@ function App() {
       recenterButton.style.backgroundSize = '70%';
 
       recenterButton.onclick = () => {
-        if (mapRef.current && churchData) {
-          mapRef.current.setZoom(12); // Set zoom level to 12 first
+        if (mapRef.current && households.length > 0) {
+          const bounds = new window.google.maps.LatLngBounds();
+          households.forEach(household => {
+            bounds.extend(household.coordinates);
+          });
+          mapRef.current.fitBounds(bounds);
+        } else if (mapRef.current && churchData) {
+          // Fallback to church location if no households
+          mapRef.current.setZoom(12);
           mapRef.current.panTo(churchData.churchInfo.coordinates);
         }
       };
@@ -95,7 +102,7 @@ function App() {
         recenterButton,
       );
     },
-    [churchData],
+    [churchData, households], // Add households to dependencies
   );
 
   // Function to check admin status
@@ -128,11 +135,20 @@ function App() {
       }));
       setHouseholds(transformedHouseholds);
       setIsLoadingData(false);
+
+      // Fit map to bounds of all households
+      if (mapRef.current && transformedHouseholds.length > 0) {
+        const bounds = new window.google.maps.LatLngBounds();
+        transformedHouseholds.forEach(household => {
+          bounds.extend(household.coordinates);
+        });
+        mapRef.current.fitBounds(bounds);
+      }
     } catch (err) {
       console.error('Failed to fetch household data from backend:', err);
       setIsLoadingData(false);
     }
-  }, []); // Add dependencies if any, currently none for this simple fetch
+  }, [mapRef]); // Add mapRef as a dependency
 
   useEffect(() => {
     const initializeSession = async () => {
