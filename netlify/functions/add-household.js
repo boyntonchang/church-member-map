@@ -12,8 +12,10 @@ exports.handler = async (event) => {
   }
 
   try {
+    console.log('Netlify Function: add-household - event.body:', event.body);
     const { coordinates, ...rest } = JSON.parse(event.body);
     const newHousehold = { ...rest, lat: coordinates?.lat, lng: coordinates?.lng };
+    console.log('Netlify Function: add-household - newHousehold:', newHousehold);
     const { data, error } = await supabaseAdmin.from('households').insert([newHousehold]).select();
     if (error) throw error;
     return {
