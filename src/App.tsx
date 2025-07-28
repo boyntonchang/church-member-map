@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleMap, useJsApiLoader, MarkerF } from '@react-google-maps/api';
-import { Box, Typography, Paper, CircularProgress, Button, IconButton, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Typography, Popover, CircularProgress, Button, IconButton, useMediaQuery, useTheme } from '@mui/material';
 import { Add as AddIcon, Logout as LogoutIcon, FilterList as FilterListIcon, Login as LoginIcon } from '@mui/icons-material';
 import type { Household, ChurchData } from './types';
 import HouseholdPopover from './components/HouseholdPopover';
@@ -48,10 +48,10 @@ function App() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false); // Default to false
   const [isChurchInfoOpen, setIsChurchInfoOpen] = useState(false);
+  const [churchAnchorEl, setChurchAnchorEl] = useState<HTMLElement | null>(null); // New state for Popover anchor
   const [showCareGroupFilter, setShowCareGroupFilter] = useState(false); // New state for care group filter
   const [selectedCareGroup, setSelectedCareGroup] = useState<string | null>(null); // New state for selected care group
   const mapRef = useRef<google.maps.Map | null>(null);
-  const churchInfoPopoverRef = useRef<HTMLDivElement>(null);
 
   const onLoad = useCallback(
     (map: google.maps.Map) => {
@@ -86,6 +86,8 @@ function App() {
       recenterButton.style.backgroundSize = '70%';
 
       recenterButton.onclick = () => {
+        console.log('Recenter button clicked: mapRef.current', mapRef.current);
+        console.log('Recenter button clicked: households.length', households.length);
         if (mapRef.current && households.length > 0) {
           const bounds = new window.google.maps.LatLngBounds();
           households.forEach(household => {
@@ -136,10 +138,13 @@ function App() {
       setHouseholds(transformedHouseholds);
       setIsLoadingData(false);
 
+      console.log('fetchHouseholds: mapRef.current', mapRef.current);
+      console.log('fetchHouseholds: transformedHouseholds.length', transformedHouseholds.length);
+
       // Fit map to bounds of all households
       if (mapRef.current && transformedHouseholds.length > 0) {
         const bounds = new window.google.maps.LatLngBounds();
-        transformedHouseholds.forEach(household => {
+        transformedHouseholds.forEach((household: Household) => {
           bounds.extend(household.coordinates);
         });
         mapRef.current.fitBounds(bounds);
@@ -172,14 +177,6 @@ function App() {
     initializeSession();
     fetchHouseholds();
 
-    const handleClickOutside = (event: MouseEvent) => {
-      if (churchInfoPopoverRef.current && !churchInfoPopoverRef.current.contains(event.target as Node)) {
-        setIsChurchInfoOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-
     // Supabase Auth State Listener
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (_, session) => {
@@ -196,9 +193,8 @@ function App() {
     // Cleanup listener on component unmount
     return () => {
       authListener.subscription.unsubscribe();
-      document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [checkAdminStatus, churchInfoPopoverRef]); // Depend on checkAdminStatus
+  }, [checkAdminStatus]); // Depend on checkAdminStatus
 
   const { isLoaded: isMapLoaded, loadError: mapLoadError } = useJsApiLoader({
     id: 'google-map-script',
@@ -503,7 +499,7 @@ function App() {
                 ? household.careGroupName.trim().toLowerCase() === selectedCareGroup
                 : true,
             )
-            .map(household => (
+            .map((household: Household) => (
               <MarkerF
                 key={household.householdId}
                 position={household.coordinates}
@@ -518,8 +514,13 @@ function App() {
               url: churchIconDataUrl,
               scaledSize: new window.google.maps.Size(40, 40),
             }}
-            onClick={() => setIsChurchInfoOpen(!isChurchInfoOpen)}
+            onClick={(e) => {
+              setIsChurchInfoOpen(!isChurchInfoOpen);
+              setChurchAnchorEl(e.domEvent.currentTarget as HTMLElement);
+              console.log('isChurchInfoOpen toggled to:', !isChurchInfoOpen);
+            }}
           />
+
         </GoogleMap>
 
         {showCareGroupFilter && (
@@ -531,37 +532,22 @@ function App() {
           />
         )}
 
-        {isChurchInfoOpen && (
-          <Paper
-            ref={churchInfoPopoverRef}
-            elevation={4}
-            sx={{
-              position: 'absolute',
-              top: 'calc(50% - 80px)', // Adjusted to be above the icon
-              left: '50%',
-              transform: 'translateX(-50%)',
-              p: 1, // Smaller padding
-              textAlign: 'center',
-              zIndex: 1,
-              backgroundColor: 'white',
-              borderRadius: '4px',
-              boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
-              '&::after': {
-                content: '""',
-                position: 'absolute',
-                bottom: '-10px', // Size of the triangle
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: 0,
-                height: 0,
-                borderLeft: '10px solid transparent',
-                borderRight: '10px solid transparent',
-                borderTop: '10px solid white', // Color of the triangle
-              },
+        {isChurchInfoOpen && churchAnchorEl && (
+          <Popover
+            open={isChurchInfoOpen}
+            anchorEl={churchAnchorEl}
+            onClose={() => setIsChurchInfoOpen(false)}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
             }}
           >
-            <Typography variant="body1">ONDO church!</Typography>
-          </Paper>
+            <Typography sx={{ p: 1 }}>ONDO church!</Typography>
+          </Popover>
         )}
       </Box>
 
