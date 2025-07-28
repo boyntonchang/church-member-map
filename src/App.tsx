@@ -412,31 +412,32 @@ function App() {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
           py: 1.6,
           px: 2,
           backgroundColor: 'rgb(39 39 36)',
           color: 'rgb(228, 153, 50)',
         }}
       >
-                <Box
-          component="img"
-          src="/images/on_degree_icon.avif"
-          alt="Church Icon"
-          sx={{ height: 40, mr: 2 }}
-        />
+        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+          <Box
+            component="img"
+            src="/images/on_degree_icon.avif"
+            alt="Church Icon"
+            sx={{ height: 40, mr: 2 }}
+          />
+        </Box>
         <Typography
           variant="h4"
           component="h1"
           align="center"
           sx={{
             fontSize: { xs: '1.2rem', sm: '1.5rem', md: '2.125rem' },
-            flexGrow: 1, // Allow typography to grow and push buttons to the right
+            flexShrink: 0,
           }}
         >
           Church Member Location
         </Typography>
-        <Box sx={{ display: 'flex', gap: 1, ml: 2 }}>
+        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 1 }}>
           {isSmallScreen ? (
             <IconButton color="primary" onClick={() => setShowCareGroupFilter(!showCareGroupFilter)}>
               <FilterListIcon />
@@ -468,7 +469,7 @@ function App() {
               )}
             </>
           ) : (
-            <Box sx={{ ml: 2 }}>
+            <Box>
               {isSmallScreen ? (
                 <IconButton color="primary" onClick={() => setIsLoginModalOpen(true)}>
                   <LoginIcon />
