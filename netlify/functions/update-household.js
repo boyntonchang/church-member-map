@@ -21,8 +21,10 @@ exports.handler = async (event) => {
   }
 
   try {
+    console.log('Netlify Function: update-household - event.body:', event.body);
     const { coordinates, ...rest } = JSON.parse(event.body);
     const updatedHouseholdData = { ...rest, lat: coordinates?.lat, lng: coordinates?.lng };
+    console.log('Netlify Function: update-household - updatedHouseholdData:', updatedHouseholdData);
 
     const { data, error } = await supabaseAdmin.from('households').update(updatedHouseholdData).eq('householdId', householdId).select();
     if (error) throw error;
