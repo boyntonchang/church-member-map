@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { Add, Delete, Close as CloseIcon } from '@mui/icons-material';
 import type { Household, Member } from '../types';
+import { supabase } from '../supabaseClient'; // Import Supabase client
 
 interface Props {
   open: boolean;
@@ -75,7 +76,41 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    let finalFamilyPhotoUrl = initialData?.familyPhotoUrl || '';
+
+    console.log('handleSubmit: familyPhoto', familyPhoto);
+
+    if (familyPhoto) {
+      const fileExtension = familyPhoto.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExtension}`;
+      const filePath = `public/${fileName}`;
+
+      console.log('handleSubmit: Uploading file to:', filePath);
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('family-photos') // Ensure you have a bucket named 'family-photos' in Supabase
+        .upload(filePath, familyPhoto, { cacheControl: '3600', upsert: false });
+
+      console.log('handleSubmit: uploadData', uploadData);
+      console.log('handleSubmit: uploadError', uploadError);
+
+      if (uploadError) {
+        console.error('Error uploading family photo:', uploadError);
+        alert('Failed to upload family photo. Please try again.');
+        return;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from('family-photos')
+        .getPublicUrl(filePath);
+
+      console.log('handleSubmit: publicUrlData', publicUrlData);
+
+      finalFamilyPhotoUrl = publicUrlData.publicUrl;
+      console.log('handleSubmit: finalFamilyPhotoUrl (after upload)', finalFamilyPhotoUrl);
+    }
+
     const membersWithIds = members.map((member, index) => ({
       ...member,
       memberId: initialData?.members[index]?.memberId || `mem_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -87,7 +122,7 @@ const AddFamilyModal: React.FC<Props> = ({ open, onClose, onSave, initialData })
       address,
       members: membersWithIds,
       ministryInvolvement: ministries.split(',').map(m => m.trim()).filter(m => m),
-      familyPhotoUrl: familyPhoto ? URL.createObjectURL(familyPhoto) : (initialData?.familyPhotoUrl || ''),
+      familyPhotoUrl: finalFamilyPhotoUrl,
       careGroupName, // Include care group name
     };
     onSave(householdToSave);
