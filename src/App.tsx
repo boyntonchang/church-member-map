@@ -436,7 +436,7 @@ function App() {
             textAlign: { xs: 'left', md: 'center' }, // Responsive text alignment
           }}
         >
-          Church Member Location
+          Members Map
         </Typography>
         <Box sx={{ flex: { xs: 'none', md: 1 }, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 1 }}>
           {isSmallScreen ? (
