@@ -142,18 +142,29 @@ function App() {
       console.log('fetchHouseholds: transformedHouseholds.length', transformedHouseholds.length);
 
       // Fit map to bounds of all households
-      if (mapRef.current && transformedHouseholds.length > 0) {
-        const bounds = new window.google.maps.LatLngBounds();
-        transformedHouseholds.forEach((household: Household) => {
-          bounds.extend(household.coordinates);
-        });
-        mapRef.current.fitBounds(bounds);
-      }
+      fitMapToHouseholds(transformedHouseholds);
     } catch (err) {
       console.error('Failed to fetch household data from backend:', err);
       setIsLoadingData(false);
     }
   }, [mapRef]); // Add mapRef as a dependency
+
+  const fitMapToHouseholds = useCallback((householdsToFit: Household[]) => {
+    if (mapRef.current && householdsToFit.length > 0) {
+      if (householdsToFit.length === 1) {
+        // If only one household, set a reasonable zoom level and pan to it
+        mapRef.current.setZoom(15); // Adjust this zoom level as needed
+        mapRef.current.panTo(householdsToFit[0].coordinates);
+      } else {
+        // If multiple households, fit bounds to cover all of them
+        const bounds = new window.google.maps.LatLngBounds();
+        householdsToFit.forEach((household: Household) => {
+          bounds.extend(household.coordinates);
+        });
+        mapRef.current.fitBounds(bounds);
+      }
+    }
+  }, [mapRef]);
 
   useEffect(() => {
     const initializeSession = async () => {
@@ -528,7 +539,16 @@ function App() {
         {showCareGroupFilter && (
           <CareGroupFilter
             households={households}
-            onSelectCareGroup={setSelectedCareGroup}
+            onSelectCareGroup={(careGroupName) => {
+              setSelectedCareGroup(careGroupName);
+              // Filter households based on the newly selected care group
+              const filtered = households.filter(household =>
+                careGroupName
+                  ? household.careGroupName.trim().toLowerCase() === careGroupName
+                  : true,
+              );
+              fitMapToHouseholds(filtered);
+            }}
             selectedCareGroup={selectedCareGroup}
             onClose={() => setShowCareGroupFilter(false)}
           />
