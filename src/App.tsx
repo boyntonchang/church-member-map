@@ -412,32 +412,33 @@ function App() {
         sx={{
           display: 'flex',
           alignItems: 'center',
+          justifyContent: { xs: 'space-between', md: 'center' }, // Adjust for mobile
           py: 1.6,
           px: 2,
           backgroundColor: 'rgb(39 39 36)',
           color: 'rgb(228, 153, 50)',
         }}
       >
-        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+        <Box sx={{ flex: { xs: 'none', md: 1 }, display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
           <Box
             component="img"
             src="/images/on_degree_icon.avif"
             alt="Church Icon"
-            sx={{ height: 40, mr: 2 }}
+            sx={{ height: { xs: 30, md: 40 }, mr: 2 }} // Responsive height
           />
         </Box>
         <Typography
           variant="h4"
           component="h1"
-          align="center"
           sx={{
             fontSize: { xs: '1.2rem', sm: '1.5rem', md: '2.125rem' },
-            flexShrink: 0,
+            flexShrink: { xs: 1, md: 0 }, // Allow shrinking on mobile
+            textAlign: { xs: 'left', md: 'center' }, // Responsive text alignment
           }}
         >
           Church Member Location
         </Typography>
-        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ flex: { xs: 'none', md: 1 }, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 1 }}>
           {isSmallScreen ? (
             <IconButton color="primary" onClick={() => setShowCareGroupFilter(!showCareGroupFilter)}>
               <FilterListIcon />
